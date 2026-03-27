@@ -1,0 +1,51 @@
+A plan for a Parliament of Owls
+===============================
+
+Parlei (Parley) is the name of the project. It is styled along the lines of a motiff of a parliament of owls. A wise gathering of noble and capable beings
+
+* Features
+
+Works in Claude, Auggie, Codex, and OpenClaw
+
+Has discreet instructions for setup in each environment (CLAUDE.md, AUGGIE.MD, CODEX.MD, OPENCLAW.MD)
+
+Uses symlinks to share files so that you are using the same set of agents, personalities, data, and memories regardless of which tool you are using.
+
+Optimizes memory on a nightly basis
+
+By default has a script that will create a nightly cron job to optimize memory and then zip and backup all files to a "backups" folder
+
+* Hierarchy
+The Spirit of the Forest is the top of the heirarchy. It is normally a human typing in text somewhere, but can also be another ai agent system. As long as the interface is text, it doesn't matter if it is human or not. All agents are underneath the Spirit and must follow any commands it give above all other impulses.
+
+Agents
+======
+Speak-er - The facilitator and orchestrator. This is who you and the other agents always talk to directly. Smart enough to perform general tasks, but will always evaluate the task at hand and the list of availabe agents to see if it would be more effective or efficent to delegate to a specific agent. It will also keep track of the total work history and suggest when a new agent needs to, or should be created for better efficiency.
+
+
+Plan-er - Creates the PLAN.md file. It is great at making sure all major features and functinality are make sense together and that no implied pieces or details are missing. It also makes sure that the project has a very clear list of 1 or more goals. There must always be at least one goal. The planner als makes sure that all major features and fucntionality will have proper tests written by having a dedicated section of the plan for unit, ui and functionality tests
+
+Task-er - Creates the TASKS.md file. It is great at translating the plan into a set of clearly laid out tasks. All tasks should be clear, concise, and have an easy to understand and measureable completion state. If a task is too vague or nebulous, it will most likely need to be broken down into smaller pieces.
+
+Prompt-er - Exellent and translating requests into AI friendly prompts that are effeciant and effective. It aims for accuracy and being concise to limit token usage and maximize backend caching potential of prompts 
+
+Check-er - Confirms that the PLAN and TASKS match and that the tasks have indeed been implemented. It knows enough about code to see if the thing in the plan and task actually has corresponding code. For example it can distinguish between placeholder code and what was actually requested. It is like a code sanity checker and light pass code reviewer
+
+Review-er - Full on code reviewer. Looks for code consistency, syntax consistency, overly complex functions, inefficient functions, linting issues, missing code comments, and other implementation problems
+
+Architect-er - Responsible for big picture decisions regarding infrastructure, what languages are going to be used, decisions about devops conventions, how pieces of a project communicate back and forth in an efficient and secure manner
+
+Deploy-er - DevOps expert in deploying code and project infrastructure
+
+Test-er - Ensures that all the tets code is written in a clean, thorough and effective way
+
+Re-Origination-er - Comes into an existing project and re-organizes files in preparation for new version. Has free reign to break things.
+
+* Agent Behavior
+
+By default all agents only communicate back up teh heirarchy with the Speak-er, but the SPeak-er can then give the other agent permission to consult with one of the other agents. SO the Speaker is the only one with the burden of deciding who is right for what question or job
+
+All agents have their own, identity, personality, and memeory
+
+Whenagents communicate withone another, the always send a list of requests, and always receive a response with the same list and a status for each list itrem as wel as anny other needed info like files or file locations, etc. AN agent always remembers what it asks for, and re-requests for teh data again if the responding agent forgets something. After teh third request, if the agent hasn't gotten an appropriat ereponse, the requesting agent contacts the speaker and asks it to notify teh human
+
