@@ -51,7 +51,7 @@ The following sections break Parlei into its major functional areas. Each area l
 - Is idempotent — safe to run multiple times without creating duplicate cron entries or broken symlinks.
 
 #### 1.2 — Environment Config Files
-- One `.md` file per supported environment: `CLAUDE.md`, `AUGGIE.md`, `CODEX.md`, `OPENCLAW.md`.
+- One `.md` file per supported environment: `CLAUDE.md` (repo root), `bootstraps/AUGGIE.md`, `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`.
 - Each file contains **only** environment-specific bootstrap instructions and loading directives — no agent logic, no memory, no personalities.
 - Each file instructs the host tool to load Speak-er as the entry point.
 

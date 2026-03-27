@@ -32,135 +32,135 @@
 | ID | Title | Type | Owner | Status |
 |---|---|---|---|---|
 | **Area 1 — Bootstrap & Installation** |||||
-| T-001 | Create `shared/` directory skeleton | `infra` | Deploy-er | `todo` |
-| T-002 | Write `CLAUDE.md` | `content` | Architect-er | `todo` |
-| T-003 | Write `AUGGIE.md` | `content` | Architect-er | `todo` |
-| T-004 | Write `CODEX.md` | `content` | Architect-er | `todo` |
-| T-005 | Write `OPENCLAW.md` | `content` | Architect-er | `todo` |
-| T-006 | `setup.sh` — argument parsing & environment validation | `feature` | Deploy-er | `todo` |
-| T-007 | `setup.sh` — symlink creation for all four environments | `feature` | Deploy-er | `todo` |
-| T-008 | `setup.sh` — create `backups/` if absent | `feature` | Deploy-er | `todo` |
-| T-009 | `setup.sh` — register nightly cron jobs | `feature` | Deploy-er | `todo` |
-| T-010 | `setup.sh` — post-creation symlink validation | `feature` | Deploy-er | `todo` |
-| T-011 | `setup.sh` — idempotency guard | `feature` | Deploy-er | `todo` |
+| T-001 | Create `shared/` directory skeleton | `infra` | Deploy-er | `done` |
+| T-002 | Write `CLAUDE.md` | `content` | Architect-er | `done` |
+| T-003 | Write `bootstraps/AUGGIE.md` | `content` | Architect-er | `done` |
+| T-004 | Write `bootstraps/CODEX.md` | `content` | Architect-er | `done` |
+| T-005 | Write `bootstraps/OPENCLAW.md` | `content` | Architect-er | `done` |
+| T-006 | `setup.sh` — argument parsing & environment validation | `feature` | Deploy-er | `done` |
+| T-007 | `setup.sh` — symlink creation for all four environments | `feature` | Deploy-er | `done` |
+| T-008 | `setup.sh` — create `backups/` if absent | `feature` | Deploy-er | `done` |
+| T-009 | `setup.sh` — register nightly cron jobs | `feature` | Deploy-er | `done` |
+| T-010 | `setup.sh` — post-creation symlink validation | `feature` | Deploy-er | `done` |
+| T-011 | `setup.sh` — idempotency guard | `feature` | Deploy-er | `done` |
 | **Area 2 — Agent System** |||||
-| T-012 | Agent definition file: Speak-er | `content` | Speak-er | `todo` |
-| T-013 | Agent definition file: Plan-er | `content` | Plan-er | `todo` |
-| T-014 | Agent definition file: Task-er | `content` | Task-er | `todo` |
-| T-015 | Agent definition file: Prompt-er | `content` | Prompt-er | `todo` |
-| T-016 | Agent definition file: Check-er | `content` | Check-er | `todo` |
-| T-017 | Agent definition file: Review-er | `content` | Review-er | `todo` |
-| T-018 | Agent definition file: Architect-er | `content` | Architect-er | `todo` |
-| T-019 | Agent definition file: Deploy-er | `content` | Deploy-er | `todo` |
-| T-020 | Agent definition file: Test-er | `content` | Test-er | `todo` |
-| T-021 | Agent definition file: Re-Origination-er | `content` | Re-Origination-er | `todo` |
-| T-022 | Personality file: Speak-er | `content` | Speak-er | `todo` |
-| T-023 | Personality file: Plan-er | `content` | Plan-er | `todo` |
-| T-024 | Personality file: Task-er | `content` | Task-er | `todo` |
-| T-025 | Personality file: Prompt-er | `content` | Prompt-er | `todo` |
-| T-026 | Personality file: Check-er | `content` | Check-er | `todo` |
-| T-027 | Personality file: Review-er | `content` | Review-er | `todo` |
-| T-028 | Personality file: Architect-er | `content` | Architect-er | `todo` |
-| T-029 | Personality file: Deploy-er | `content` | Deploy-er | `todo` |
-| T-030 | Personality file: Test-er | `content` | Test-er | `todo` |
-| T-031 | Personality file: Re-Origination-er | `content` | Re-Origination-er | `todo` |
-| T-032 | Speak-er: delegation & routing logic spec | `content` | Speak-er | `todo` |
-| T-033 | Speak-er: lateral grant mechanism spec | `content` | Speak-er | `todo` |
-| T-034 | Re-Origination-er: safety gate spec | `content` | Re-Origination-er | `todo` |
+| T-012 | Agent definition file: Speak-er | `content` | Speak-er | `done` |
+| T-013 | Agent definition file: Plan-er | `content` | Plan-er | `done` |
+| T-014 | Agent definition file: Task-er | `content` | Task-er | `done` |
+| T-015 | Agent definition file: Prompt-er | `content` | Prompt-er | `done` |
+| T-016 | Agent definition file: Check-er | `content` | Check-er | `done` |
+| T-017 | Agent definition file: Review-er | `content` | Review-er | `done` |
+| T-018 | Agent definition file: Architect-er | `content` | Architect-er | `done` |
+| T-019 | Agent definition file: Deploy-er | `content` | Deploy-er | `done` |
+| T-020 | Agent definition file: Test-er | `content` | Test-er | `done` |
+| T-021 | Agent definition file: Re-Origination-er | `content` | Re-Origination-er | `done` |
+| T-022 | Personality file: Speak-er | `content` | Speak-er | `done` |
+| T-023 | Personality file: Plan-er | `content` | Plan-er | `done` |
+| T-024 | Personality file: Task-er | `content` | Task-er | `done` |
+| T-025 | Personality file: Prompt-er | `content` | Prompt-er | `done` |
+| T-026 | Personality file: Check-er | `content` | Check-er | `done` |
+| T-027 | Personality file: Review-er | `content` | Review-er | `done` |
+| T-028 | Personality file: Architect-er | `content` | Architect-er | `done` |
+| T-029 | Personality file: Deploy-er | `content` | Deploy-er | `done` |
+| T-030 | Personality file: Test-er | `content` | Test-er | `done` |
+| T-031 | Personality file: Re-Origination-er | `content` | Re-Origination-er | `done` |
+| T-032 | Speak-er: delegation & routing logic spec | `content` | Speak-er | `done` |
+| T-033 | Speak-er: lateral grant mechanism spec | `content` | Speak-er | `done` |
+| T-034 | Re-Origination-er: safety gate spec | `content` | Re-Origination-er | `done` |
 | **Area 3 — Memory System** |||||
-| T-035 | Create memory subdirectories for all 10 agents | `infra` | Deploy-er | `todo` |
-| T-036 | Seed memory files: Speak-er | `content` | Speak-er | `todo` |
-| T-037 | Seed memory files: Plan-er | `content` | Plan-er | `todo` |
-| T-038 | Seed memory files: Task-er | `content` | Task-er | `todo` |
-| T-039 | Seed memory files: Prompt-er | `content` | Prompt-er | `todo` |
-| T-040 | Seed memory files: Check-er | `content` | Check-er | `todo` |
-| T-041 | Seed memory files: Review-er | `content` | Review-er | `todo` |
-| T-042 | Seed memory files: Architect-er | `content` | Architect-er | `todo` |
-| T-043 | Seed memory files: Deploy-er | `content` | Deploy-er | `todo` |
-| T-044 | Seed memory files: Test-er | `content` | Test-er | `todo` |
-| T-045 | Seed memory files: Re-Origination-er | `content` | Re-Origination-er | `todo` |
-| T-046 | `memory_optimize.sh` — deduplication logic | `feature` | Deploy-er | `todo` |
-| T-047 | `memory_optimize.sh` — episodic-to-long-term promotion logic | `feature` | Deploy-er | `todo` |
-| T-048 | `memory_optimize.sh` — age-based pruning logic | `feature` | Deploy-er | `todo` |
-| T-049 | `memory_optimize.sh` — LLM summarization call | `feature` | Deploy-er | `todo` |
-| T-050 | `memory_optimize.sh` — logging (`optimize_log.md`, `error_log.md`) | `feature` | Deploy-er | `todo` |
-| T-051 | Write `shared/tools/memory_config.json` | `content` | Architect-er | `todo` |
-| T-052 | Write LLM HTTP interface module | `feature` | Deploy-er | `todo` |
+| T-035 | Create memory subdirectories for all 10 agents | `infra` | Deploy-er | `done` |
+| T-036 | Seed memory files: Speak-er | `content` | Speak-er | `done` |
+| T-037 | Seed memory files: Plan-er | `content` | Plan-er | `done` |
+| T-038 | Seed memory files: Task-er | `content` | Task-er | `done` |
+| T-039 | Seed memory files: Prompt-er | `content` | Prompt-er | `done` |
+| T-040 | Seed memory files: Check-er | `content` | Check-er | `done` |
+| T-041 | Seed memory files: Review-er | `content` | Review-er | `done` |
+| T-042 | Seed memory files: Architect-er | `content` | Architect-er | `done` |
+| T-043 | Seed memory files: Deploy-er | `content` | Deploy-er | `done` |
+| T-044 | Seed memory files: Test-er | `content` | Test-er | `done` |
+| T-045 | Seed memory files: Re-Origination-er | `content` | Re-Origination-er | `done` |
+| T-046 | `memory_optimize.sh` — deduplication logic | `feature` | Deploy-er | `done` |
+| T-047 | `memory_optimize.sh` — episodic-to-long-term promotion logic | `feature` | Deploy-er | `done` |
+| T-048 | `memory_optimize.sh` — age-based pruning logic | `feature` | Deploy-er | `done` |
+| T-049 | `memory_optimize.sh` — LLM summarization call | `feature` | Deploy-er | `done` |
+| T-050 | `memory_optimize.sh` — logging (`optimize_log.md`, `error_log.md`) | `feature` | Deploy-er | `done` |
+| T-051 | Write `shared/tools/memory_config.json` | `content` | Architect-er | `done` |
+| T-052 | Write LLM HTTP interface module | `feature` | Deploy-er | `done` |
 | **Area 4 — Communication Protocol** |||||
-| T-053 | Write JSON schema: request envelope | `content` | Architect-er | `todo` |
-| T-054 | Write JSON schema: response envelope | `content` | Architect-er | `todo` |
-| T-055 | Write request ID generator | `feature` | Deploy-er | `todo` |
-| T-056 | Write retry counter & missing-item re-request logic | `feature` | Deploy-er | `todo` |
-| T-057 | Write escalation message format & trigger logic | `feature` | Deploy-er | `todo` |
-| T-058 | Write protocol reference doc (`shared/tools/protocol.md`) | `content` | Architect-er | `todo` |
+| T-053 | Write JSON schema: request envelope | `content` | Architect-er | `done` |
+| T-054 | Write JSON schema: response envelope | `content` | Architect-er | `done` |
+| T-055 | Write request ID generator | `feature` | Deploy-er | `done` |
+| T-056 | Write retry counter & missing-item re-request logic | `feature` | Deploy-er | `done` |
+| T-057 | Write escalation message format & trigger logic | `feature` | Deploy-er | `done` |
+| T-058 | Write protocol reference doc (`shared/tools/protocol.md`) | `content` | Architect-er | `done` |
 | **Area 5 — Backup System** |||||
-| T-059 | `backup.sh` — archive creation (`tar.gz`) | `feature` | Deploy-er | `todo` |
-| T-060 | `backup.sh` — date-based archive naming | `feature` | Deploy-er | `todo` |
-| T-061 | `backup.sh` — retention pruning | `feature` | Deploy-er | `todo` |
-| T-062 | `backup.sh` — success logging (`backup_log.md`) | `feature` | Deploy-er | `todo` |
-| T-063 | `backup.sh` — error logging & non-zero exit | `feature` | Deploy-er | `todo` |
-| T-064 | `backup.sh` — optimization error check pre-run | `feature` | Deploy-er | `todo` |
-| T-065 | `restore.sh` — date argument, confirmation prompt, extraction | `feature` | Deploy-er | `todo` |
-| T-066 | `restore.sh` — guard against overwriting `backups/` | `feature` | Deploy-er | `todo` |
+| T-059 | `backup.sh` — archive creation (`tar.gz`) | `feature` | Deploy-er | `done` |
+| T-060 | `backup.sh` — date-based archive naming | `feature` | Deploy-er | `done` |
+| T-061 | `backup.sh` — retention pruning | `feature` | Deploy-er | `done` |
+| T-062 | `backup.sh` — success logging (`backup_log.md`) | `feature` | Deploy-er | `done` |
+| T-063 | `backup.sh` — error logging & non-zero exit | `feature` | Deploy-er | `done` |
+| T-064 | `backup.sh` — optimization error check pre-run | `feature` | Deploy-er | `done` |
+| T-065 | `restore.sh` — date argument, confirmation prompt, extraction | `feature` | Deploy-er | `done` |
+| T-066 | `restore.sh` — guard against overwriting `backups/` | `feature` | Deploy-er | `done` |
 | **Area 6 — Document Outputs** |||||
 | **Area 2b — Agent Resilience (current_task.md)** |||||
-| T-106 | Define `current_task.md` format spec | `content` | Architect-er | `todo` |
-| T-107 | Implement `current_task.md` write-on-receive behavior | `feature` | Deploy-er | `todo` |
-| T-108 | Implement incremental subtask checkoff | `feature` | Deploy-er | `todo` |
-| T-109 | Implement startup resume check | `feature` | Deploy-er | `todo` |
-| T-110 | Implement completion archival (move to `episodic/`) | `feature` | Deploy-er | `todo` |
-| T-111 | Implement unresolvable-resumption escalation | `feature` | Deploy-er | `todo` |
-| T-112 | Update `backup.sh` to skip in-progress `current_task.md` | `feature` | Deploy-er | `todo` |
-| T-113 | Unit tests: `current_task.md` write behavior | `test` | Test-er | `todo` |
-| T-114 | Unit tests: subtask checkoff and state accuracy | `test` | Test-er | `todo` |
-| T-115 | Unit tests: startup resume detection | `test` | Test-er | `todo` |
-| T-116 | Unit tests: completion archival | `test` | Test-er | `todo` |
-| T-117 | Integration test: mid-task interruption and resume | `test` | Test-er | `todo` |
-| T-118 | Integration test: unresolvable resume triggers escalation | `test` | Test-er | `todo` |
-| T-119 | Functionality test: simulated mid-task session kill and restart | `test` | Test-er | `todo` |
+| T-106 | Define `current_task.md` format spec | `content` | Architect-er | `done` |
+| T-107 | Implement `current_task.md` write-on-receive behavior | `feature` | Deploy-er | `done` |
+| T-108 | Implement incremental subtask checkoff | `feature` | Deploy-er | `done` |
+| T-109 | Implement startup resume check | `feature` | Deploy-er | `done` |
+| T-110 | Implement completion archival (move to `episodic/`) | `feature` | Deploy-er | `done` |
+| T-111 | Implement unresolvable-resumption escalation | `feature` | Deploy-er | `done` |
+| T-112 | Update `backup.sh` to skip in-progress `current_task.md` | `feature` | Deploy-er | `done` |
+| T-113 | Unit tests: `current_task.md` write behavior | `test` | Test-er | `done` |
+| T-114 | Unit tests: subtask checkoff and state accuracy | `test` | Test-er | `done` |
+| T-115 | Unit tests: startup resume detection | `test` | Test-er | `done` |
+| T-116 | Unit tests: completion archival | `test` | Test-er | `done` |
+| T-117 | Integration test: mid-task interruption and resume | `test` | Test-er | `done` |
+| T-118 | Integration test: unresolvable resume triggers escalation | `test` | Test-er | `done` |
+| T-119 | Functionality test: simulated mid-task session kill and restart | `test` | Test-er | `done` |
 | T-067 | `PLAN.md` authored and complete | `content` | Plan-er | `done` |
-| T-068 | `TASKS.md` authored and complete | `content` | Task-er | `in-progress` |
-| T-069 | Write `ARCHITECTURE.md` initial structure | `content` | Architect-er | `todo` |
-| T-070 | Write `REORIGINATION.md` template | `content` | Re-Origination-er | `todo` |
+| T-068 | `TASKS.md` authored and complete | `content` | Task-er | `done` |
+| T-069 | Write `ARCHITECTURE.md` initial structure | `content` | Architect-er | `done` |
+| T-070 | Write `REORIGINATION.md` template | `content` | Re-Origination-er | `done` |
 | **Area 7 — Test Infrastructure** |||||
-| T-071 | Select and configure test framework | `infra` | Test-er | `todo` |
-| T-072 | Write test runner script (`scripts/run_tests.sh`) | `infra` | Test-er | `todo` |
-| T-073 | Write shared test fixtures and helper utilities | `infra` | Test-er | `todo` |
+| T-071 | Select and configure test framework | `infra` | Test-er | `done` |
+| T-072 | Write test runner script (`scripts/run_tests.sh`) | `infra` | Test-er | `done` |
+| T-073 | Write shared test fixtures and helper utilities | `infra` | Test-er | `done` |
 | **Unit Tests** |||||
-| T-074 | Unit tests: `setup.sh` — symlink creation | `test` | Test-er | `todo` |
-| T-075 | Unit tests: `setup.sh` — idempotency | `test` | Test-er | `todo` |
-| T-076 | Unit tests: `setup.sh` — cron registration | `test` | Test-er | `todo` |
-| T-077 | Unit tests: `setup.sh` — non-zero exit on failure | `test` | Test-er | `todo` |
-| T-078 | Unit tests: `memory_optimize.sh` — deduplication | `test` | Test-er | `todo` |
-| T-079 | Unit tests: `memory_optimize.sh` — promotion logic | `test` | Test-er | `todo` |
-| T-080 | Unit tests: `memory_optimize.sh` — pruning | `test` | Test-er | `todo` |
-| T-081 | Unit tests: `memory_optimize.sh` — error logging | `test` | Test-er | `todo` |
-| T-082 | Unit tests: `backup.sh` — archive creation & naming | `test` | Test-er | `todo` |
-| T-083 | Unit tests: `backup.sh` — retention pruning | `test` | Test-er | `todo` |
-| T-084 | Unit tests: `backup.sh` — error logging | `test` | Test-er | `todo` |
-| T-085 | Unit tests: `restore.sh` — extraction & confirmation | `test` | Test-er | `todo` |
-| T-086 | Unit tests: `restore.sh` — no overwrite of `backups/` | `test` | Test-er | `todo` |
-| T-087 | Unit tests: JSON envelope validation | `test` | Test-er | `todo` |
-| T-088 | Unit tests: request ID generator | `test` | Test-er | `todo` |
-| T-089 | Unit tests: retry counter | `test` | Test-er | `todo` |
-| T-090 | Unit tests: memory read/write conventions | `test` | Test-er | `todo` |
-| T-091 | Unit tests: LLM interface module | `test` | Test-er | `todo` |
+| T-074 | Unit tests: `setup.sh` — symlink creation | `test` | Test-er | `done` |
+| T-075 | Unit tests: `setup.sh` — idempotency | `test` | Test-er | `done` |
+| T-076 | Unit tests: `setup.sh` — cron registration | `test` | Test-er | `done` |
+| T-077 | Unit tests: `setup.sh` — non-zero exit on failure | `test` | Test-er | `done` |
+| T-078 | Unit tests: `memory_optimize.sh` — deduplication | `test` | Test-er | `done` |
+| T-079 | Unit tests: `memory_optimize.sh` — promotion logic | `test` | Test-er | `done` |
+| T-080 | Unit tests: `memory_optimize.sh` — pruning | `test` | Test-er | `done` |
+| T-081 | Unit tests: `memory_optimize.sh` — error logging | `test` | Test-er | `done` |
+| T-082 | Unit tests: `backup.sh` — archive creation & naming | `test` | Test-er | `done` |
+| T-083 | Unit tests: `backup.sh` — retention pruning | `test` | Test-er | `done` |
+| T-084 | Unit tests: `backup.sh` — error logging | `test` | Test-er | `done` |
+| T-085 | Unit tests: `restore.sh` — extraction & confirmation | `test` | Test-er | `done` |
+| T-086 | Unit tests: `restore.sh` — no overwrite of `backups/` | `test` | Test-er | `done` |
+| T-087 | Unit tests: JSON envelope validation | `test` | Test-er | `done` |
+| T-088 | Unit tests: request ID generator | `test` | Test-er | `done` |
+| T-089 | Unit tests: retry counter | `test` | Test-er | `done` |
+| T-090 | Unit tests: memory read/write conventions | `test` | Test-er | `done` |
+| T-091 | Unit tests: LLM interface module | `test` | Test-er | `done` |
 | **Integration Tests** |||||
-| T-092 | Integration test: full setup → two-environment symlink parity | `test` | Test-er | `todo` |
-| T-093 | Integration test: task to each specialist returns valid JSON | `test` | Test-er | `todo` |
-| T-094 | Integration test: missing response item → retry → escalation | `test` | Test-er | `todo` |
-| T-095 | Integration test: lateral grant flow | `test` | Test-er | `todo` |
-| T-096 | Integration test: memory optimization full run | `test` | Test-er | `todo` |
-| T-097 | Integration test: backup run after optimization | `test` | Test-er | `todo` |
-| T-098 | Integration test: restore from backup | `test` | Test-er | `todo` |
-| T-099 | Integration test: Re-Origination-er safety gate | `test` | Test-er | `todo` |
+| T-092 | Integration test: full setup → two-environment symlink parity | `test` | Test-er | `done` |
+| T-093 | Integration test: task to each specialist returns valid JSON | `test` | Test-er | `done` |
+| T-094 | Integration test: missing response item → retry → escalation | `test` | Test-er | `done` |
+| T-095 | Integration test: lateral grant flow | `test` | Test-er | `done` |
+| T-096 | Integration test: memory optimization full run | `test` | Test-er | `done` |
+| T-097 | Integration test: backup run after optimization | `test` | Test-er | `done` |
+| T-098 | Integration test: restore from backup | `test` | Test-er | `done` |
+| T-099 | Integration test: Re-Origination-er safety gate | `test` | Test-er | `done` |
 | **Functionality Tests** |||||
-| T-100 | Functionality test: bootstrap completes in under 5 minutes | `test` | Test-er | `todo` |
-| T-101 | Functionality test: Plan → Tasks coherence via Check-er | `test` | Test-er | `todo` |
-| T-102 | Functionality test: 48-hour autonomous operation simulation | `test` | Test-er | `todo` |
-| T-103 | Functionality test: all 10 agents respond to identity query | `test` | Test-er | `todo` |
-| T-104 | Functionality test: environment switch preserves parity | `test` | Test-er | `todo` |
-| T-105 | Functionality test: escalation chain produces human-visible output | `test` | Test-er | `todo` |
+| T-100 | Functionality test: bootstrap completes in under 5 minutes | `test` | Test-er | `done` |
+| T-101 | Functionality test: Plan → Tasks coherence via Check-er | `test` | Test-er | `done` |
+| T-102 | Functionality test: 48-hour autonomous operation simulation | `test` | Test-er | `done` |
+| T-103 | Functionality test: all 10 agents respond to identity query | `test` | Test-er | `done` |
+| T-104 | Functionality test: environment switch preserves parity | `test` | Test-er | `done` |
+| T-105 | Functionality test: escalation chain produces human-visible output | `test` | Test-er | `done` |
 
 ---
 
@@ -189,30 +189,30 @@
 
 ---
 
-### T-003 — Write `AUGGIE.md`
+### T-003 — Write `bootstraps/AUGGIE.md`
 - **Type:** `content`
 - **Owner:** Architect-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** Same structural requirements as T-002, scoped to the Augment environment. File exists, contains Augment-specific bootstrap instructions and a Speak-er load directive, and contains nothing that duplicates `shared/`.
+- **Completion condition:** Same structural requirements as T-002, scoped to the Augment environment. File exists at `bootstraps/AUGGIE.md`, contains Augment-specific bootstrap instructions and a Speak-er load directive, and contains nothing that duplicates `../shared/`.
 
 ---
 
-### T-004 — Write `CODEX.md`
+### T-004 — Write `bootstraps/CODEX.md`
 - **Type:** `content`
 - **Owner:** Architect-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** Same structural requirements as T-002, scoped to the Codex environment.
+- **Completion condition:** Same structural requirements as T-002, scoped to the Codex environment. File exists at `bootstraps/CODEX.md`.
 
 ---
 
-### T-005 — Write `OPENCLAW.md`
+### T-005 — Write `bootstraps/OPENCLAW.md`
 - **Type:** `content`
 - **Owner:** Architect-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** Same structural requirements as T-002, scoped to the OpenClaw environment.
+- **Completion condition:** Same structural requirements as T-002, scoped to the OpenClaw environment. File exists at `bootstraps/OPENCLAW.md`.
 
 ---
 
@@ -640,7 +640,7 @@
 - **Owner:** Architect-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** `shared/tools/memory_config.json` exists and is valid JSON. It contains at minimum: `llm_endpoint` (string), `llm_model` (string), `llm_auth_token` (string, may be empty), `episodic_retention_days` (integer, default 90), `promotion_threshold` (integer, default 3), `backup_retention_count` (integer, default 30). Running `python3 -m json.tool shared/tools/memory_config.json` (or equivalent) exits without error.
+- **Completion condition:** `shared/tools/memory_config.json` exists and is valid JSON. It contains at minimum: `llm_model` (string, may be empty), `episodic_retention_days` (integer, default 90), `promotion_threshold` (integer, default 3), `backup_retention_count` (integer, default 30). Running `python3 -m json.tool shared/tools/memory_config.json` (or equivalent) exits without error.
 
 ---
 
@@ -799,39 +799,39 @@
 
 ---
 
-### T-067 — `PLAN.md` authored and complete
+### T-067 — `docs/PLAN.md` authored and complete
 - **Type:** `content`
 - **Owner:** Plan-er
 - **Status:** `done`
 - **Blocked by:** —
-- **Completion condition:** `PLAN.md` exists at repo root. Contains: at least one measurable goal, a full feature list with all six areas, a dependency map, and a testing strategy with unit, integration, and functionality sections. ✅
+- **Completion condition:** `docs/PLAN.md` exists. Contains: at least one measurable goal, a full feature list with all six areas, a dependency map, and a testing strategy with unit, integration, and functionality sections. ✅
 
 ---
 
-### T-068 — `TASKS.md` authored and complete
+### T-068 — `docs/TASKS.md` authored and complete
 - **Type:** `content`
 - **Owner:** Task-er
 - **Status:** `in-progress`
 - **Blocked by:** T-067
-- **Completion condition:** `TASKS.md` exists at repo root. Every feature in `PLAN.md` has at least one corresponding task in this file. Every task has: a unique ID, a type, an owner, a status, a "blocked by" field, and a completion condition that is specific and verifiable. This document itself is the artifact.
+- **Completion condition:** `docs/TASKS.md` exists. Every feature in `docs/PLAN.md` has at least one corresponding task in this file. Every task has: a unique ID, a type, an owner, a status, a "blocked by" field, and a completion condition that is specific and verifiable. This document itself is the artifact.
 
 ---
 
-### T-069 — Write `ARCHITECTURE.md` initial structure
+### T-069 — Write `docs/ARCHITECTURE.md` initial structure
 - **Type:** `content`
 - **Owner:** Architect-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** `ARCHITECTURE.md` exists at repo root with the following sections present (may be populated with TBD stubs): (1) Language & Runtime choices with rationale, (2) Communication patterns, (3) Deployment targets, (4) Explicitly rejected alternatives with reasons, (5) File format policy (Markdown > JSON > TOML > YAML as last resort). The open-source-first principle is stated explicitly in the document.
+- **Completion condition:** `docs/ARCHITECTURE.md` exists with the following sections present (may be populated with TBD stubs): (1) Language & Runtime choices with rationale, (2) Communication patterns, (3) Deployment targets, (4) Explicitly rejected alternatives with reasons, (5) File format policy (Markdown > JSON > TOML > YAML as last resort). The open-source-first principle is stated explicitly in the document.
 
 ---
 
-### T-070 — Write `REORIGINATION.md` template
+### T-070 — Write `docs/REORIGINATION.md` template
 - **Type:** `content`
 - **Owner:** Re-Origination-er
 - **Status:** `todo`
 - **Blocked by:** T-001
-- **Completion condition:** `REORIGINATION.md` exists at repo root as a template. It contains: a header section for date and Spirit confirmation token, a table with columns for "path changed", "action taken" (moved/deleted/renamed/restructured), and "reason", and a footer section for a post-run summary. It is clearly marked as a template — no actual changes are logged in the initial version.
+- **Completion condition:** `docs/REORIGINATION.md` exists as a template. It contains: a header section for date and Spirit confirmation token, a table with columns for "path changed", "action taken" (moved/deleted/renamed/restructured), and "reason", and a footer section for a post-run summary. It is clearly marked as a template — no actual changes are logged in the initial version.
 
 ---
 

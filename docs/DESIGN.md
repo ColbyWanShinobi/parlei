@@ -21,12 +21,12 @@ Parlei (a riff on "parley") is a multi-agent AI orchestration framework styled a
 
 Parlei is designed to run in the following AI coding environments:
 
-| Environment | Config File     |
-|-------------|-----------------|
-| Claude Code | `CLAUDE.md`     |
-| Augment     | `AUGGIE.md`     |
-| Codex       | `CODEX.md`      |
-| OpenClaw    | `OPENCLAW.md`   |
+| Environment | Config File                  |
+|-------------|------------------------------|
+| Claude Code | `CLAUDE.md`                  |
+| Augment     | `bootstraps/AUGGIE.md`       |
+| Codex       | `bootstraps/CODEX.md`        |
+| OpenClaw    | `bootstraps/OPENCLAW.md`     |
 
 Each environment config file contains **only** environment-specific setup instructions and loading behavior. All shared logic, agent definitions, personality files, memory, and tooling live in a shared directory and are accessed via **symlinks**, ensuring every environment uses the exact same set of agents and data.
 
@@ -34,10 +34,21 @@ Each environment config file contains **only** environment-specific setup instru
 
 ```
 parlei/
-├── CLAUDE.md            # Claude-specific bootstrap (symlinks or sources shared/)
-├── AUGGIE.md            # Augment-specific bootstrap
-├── CODEX.md             # Codex-specific bootstrap
-├── OPENCLAW.md          # OpenClaw-specific bootstrap
+├── CLAUDE.md            # Claude Code bootstrap (must be at root for Claude Code to load)
+├── bootstraps/
+│   ├── AUGGIE.md        # Augment-specific bootstrap
+│   ├── CODEX.md         # Codex-specific bootstrap
+│   └── OPENCLAW.md      # OpenClaw-specific bootstrap
+├── docs/
+│   ├── ARCHITECTURE.md      # Infrastructure and tech decisions
+│   ├── DESIGN.md            # This document
+│   ├── PLAN.md              # High-level feature plan
+│   ├── REORIGINATION.md     # Log of restructuring actions
+│   ├── TASKS.md             # Concrete, trackable task list
+│   ├── install-claude.md    # Install, uninstall & troubleshooting — Claude Code
+│   ├── install-augment.md   # Install, uninstall & troubleshooting — Augment
+│   ├── install-codex.md     # Install, uninstall & troubleshooting — Codex
+│   └── install-openclaw.md  # Install, uninstall & troubleshooting — OpenClaw
 ├── shared/
 │   ├── agents/          # Agent definition files (.md)
 │   ├── memory/          # All agent memory files (includes current_task.md per agent)
@@ -383,11 +394,15 @@ All technology choices should trend toward **open source solutions** unless a pr
 
 | File | Owner | Purpose |
 |------|-------|---------|
-| `PLAN.md` | Plan-er | High-level feature plan with goals and test strategy |
-| `TASKS.md` | Task-er | Concrete, trackable task list |
-| `ARCHITECTURE.md` | Architect-er | Infrastructure and tech decisions |
-| `REORIGINATION.md` | Re-Origination-er | Log of restructuring actions |
-| `DESIGN.md` | — | This document — system design reference |
+| `docs/PLAN.md` | Plan-er | High-level feature plan with goals and test strategy |
+| `docs/TASKS.md` | Task-er | Concrete, trackable task list |
+| `docs/ARCHITECTURE.md` | Architect-er | Infrastructure and tech decisions |
+| `docs/REORIGINATION.md` | Re-Origination-er | Log of restructuring actions |
+| `docs/DESIGN.md` | — | This document — system design reference |
+| `docs/install-claude.md` | — | Install, uninstall & troubleshooting for Claude Code |
+| `docs/install-augment.md` | — | Install, uninstall & troubleshooting for Augment |
+| `docs/install-codex.md` | — | Install, uninstall & troubleshooting for Codex |
+| `docs/install-openclaw.md` | — | Install, uninstall & troubleshooting for OpenClaw |
 | `shared/memory/` | All agents | Persistent per-agent memory |
 | `shared/memory/<agent>/current_task.md` | Each agent | Active task list and interruption recovery checkpoint |
 | `backups/` | backup.sh | Nightly compressed backups |
@@ -401,7 +416,7 @@ All technology choices should trend toward **open source solutions** unless a pr
 2. Run `scripts/setup.sh <environment>` (e.g., `setup.sh claude`) to:
    - Create symlinks from the environment config to `shared/`.
    - Install nightly cron jobs for memory optimization and backup.
-3. Open your AI coding tool and load the corresponding environment config (`CLAUDE.md`, `AUGGIE.md`, etc.).
+3. Open your AI coding tool and load the corresponding environment config (`CLAUDE.md` for Claude Code, or the file under `bootstraps/` for other environments).
 4. Speak to **Speak-er**. The parliament is in session. 🦉
 
 ---

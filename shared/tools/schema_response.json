@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parlei/schema_response",
+  "title": "Parlei Agent Response Envelope",
+  "description": "The standard inter-agent response message format for the Parlei parliament.",
+  "type": "object",
+  "required": ["from", "to", "request_id", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "from": {
+      "type": "string",
+      "description": "The agent sending this response.",
+      "minLength": 1
+    },
+    "to": {
+      "type": "string",
+      "description": "The agent this response is addressed to (usually Speak-er).",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Must match the request_id of the originating request.",
+      "pattern": "^req-[a-z]+-[0-9]{8}-[0-9]{3}$"
+    },
+    "items": {
+      "type": "array",
+      "description": "One response item per request item. All request item IDs must be accounted for.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "notes"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Must match the corresponding request item ID.",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Outcome of this item.",
+            "enum": ["confirmed", "incomplete", "failed", "deferred"]
+          },
+          "notes": {
+            "type": "string",
+            "description": "Explanation, evidence, file paths, or output for this item.",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string",
+            "description": "Optional. File path or inline content produced by this item."
+          }
+        }
+      }
+    }
+  }
+}

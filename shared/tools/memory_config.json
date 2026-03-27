@@ -1,0 +1,7 @@
+{
+  "llm_model": "",
+  "episodic_retention_days": 90,
+  "promotion_threshold": 3,
+  "backup_retention_count": 30,
+  "compression": "gzip"
+}
