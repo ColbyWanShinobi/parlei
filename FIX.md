@@ -758,7 +758,9 @@ necessary context must be provided in the request envelope's "context" field.
 
 ---
 
-## 🔒 Phase 7 — Concurrency & Safety
+## 🔒 Phase 7 — Concurrency & Safety ✅
+
+> *Completed during Phase 3. The file lock was implemented directly in `dispatch.sh` at authorship time rather than deferred as a separate edit.*
 
 ---
 
