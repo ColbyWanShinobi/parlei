@@ -90,7 +90,9 @@ print('all pass')
 }
 
 @test "schema: request and response schema files are valid JSON" {
-  run python3 -c "import json; json.load(open('$REQUEST_SCHEMA')); json.load(open('$RESPONSE_SCHEMA')); print('valid')"
+  local req_schema="$PARLEI_TEST_ROOT/shared/tools/schema_request.json"
+  local res_schema="$PARLEI_TEST_ROOT/shared/tools/schema_response.json"
+  run python3 -c "import json; json.load(open('$req_schema')); json.load(open('$res_schema')); print('valid')"
   [ "$status" -eq 0 ]
   [[ "$output" == "valid" ]]
 }

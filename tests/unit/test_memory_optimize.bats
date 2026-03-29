@@ -23,10 +23,10 @@ setup() {
 }
 EOF
 
+  parlei_setup_mock_dispatch "$PARLEI_TEST_ROOT"
+
   cp "$REPO_ROOT/scripts/memory_optimize.sh" "$PARLEI_TEST_ROOT/scripts/memory_optimize.sh"
-  cp "$REPO_ROOT/shared/tools/llm_call.sh" "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh"
-  chmod +x "$PARLEI_TEST_ROOT/scripts/memory_optimize.sh" \
-            "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh"
+  chmod +x "$PARLEI_TEST_ROOT/scripts/memory_optimize.sh"
 }
 
 teardown() {

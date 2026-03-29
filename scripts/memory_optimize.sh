@@ -51,7 +51,35 @@ for AGENT in "${AGENTS[@]}"; do
 
   mapfile -t EPISODIC_FILES < <(find "$EPISODIC_DIR" -maxdepth 1 -name "*.md" ! -name "current_task*.md" | sort)
 
-  # ── Step 1: Deduplication across episodic logs ────────────────────────────
+  # ── Step 1: Promote entries appearing in N+ episodic files ───────────────
+  # Promotion runs before deduplication so cross-file occurrence counts are
+  # taken from the unmodified episodic files.
+
+  PROMOTED=0
+  if [[ ${#EPISODIC_FILES[@]} -ge "$PROMOTION_THRESHOLD" && -f "$LONG_TERM" ]]; then
+    # Extract non-empty lines from all episodic files, count occurrences
+    FREQ_FILE="$(mktemp)"
+    for EFILE in "${EPISODIC_FILES[@]}"; do
+      grep -v '^#' "$EFILE" | grep -v '^[[:space:]]*$' || true
+    done | sort | uniq -c | sort -rn > "$FREQ_FILE"
+
+    while IFS= read -r freq_line; do
+      COUNT="$(echo "$freq_line" | awk '{print $1}')"
+      ENTRY="$(echo "$freq_line" | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]*//')"
+      if [[ "$COUNT" -ge "$PROMOTION_THRESHOLD" ]]; then
+        if ! grep -qxF "$ENTRY" "$LONG_TERM" 2>/dev/null; then
+          echo "" >> "$LONG_TERM"
+          echo "$ENTRY" >> "$LONG_TERM"
+          PROMOTED=$((PROMOTED + 1))
+        fi
+      fi
+    done < "$FREQ_FILE"
+
+    rm -f "$FREQ_FILE"
+  fi
+  TOTAL_PROMOTED=$((TOTAL_PROMOTED + PROMOTED))
+
+  # ── Step 2: Deduplication across episodic logs ────────────────────────────
 
   DEDUPED=0
   if [[ ${#EPISODIC_FILES[@]} -gt 1 ]]; then
@@ -75,32 +103,6 @@ for AGENT in "${AGENTS[@]}"; do
     trap - EXIT
   fi
   TOTAL_DEDUPED=$((TOTAL_DEDUPED + DEDUPED))
-
-  # ── Step 2: Promote entries appearing in N+ episodic files ───────────────
-
-  PROMOTED=0
-  if [[ ${#EPISODIC_FILES[@]} -ge "$PROMOTION_THRESHOLD" && -f "$LONG_TERM" ]]; then
-    # Extract non-empty lines from all episodic files, count occurrences
-    FREQ_FILE="$(mktemp)"
-    for EFILE in "${EPISODIC_FILES[@]}"; do
-      grep -v '^#' "$EFILE" | grep -v '^[[:space:]]*$' || true
-    done | sort | uniq -c | sort -rn > "$FREQ_FILE"
-
-    while IFS= read -r freq_line; do
-      COUNT="$(echo "$freq_line" | awk '{print $1}')"
-      ENTRY="$(echo "$freq_line" | sed 's/^[[:space:]]*[0-9]\+[[:space:]]*//')"
-      if [[ "$COUNT" -ge "$PROMOTION_THRESHOLD" ]]; then
-        if ! grep -qxF "$ENTRY" "$LONG_TERM" 2>/dev/null; then
-          echo "" >> "$LONG_TERM"
-          echo "$ENTRY" >> "$LONG_TERM"
-          PROMOTED=$((PROMOTED + 1))
-        fi
-      fi
-    done < "$FREQ_FILE"
-
-    rm -f "$FREQ_FILE"
-  fi
-  TOTAL_PROMOTED=$((TOTAL_PROMOTED + PROMOTED))
 
   # ── Step 3: Prune episodic files older than retention threshold ──────────
 

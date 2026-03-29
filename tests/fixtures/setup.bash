@@ -50,9 +50,23 @@ parlei_create_shared_skeleton() {
 }
 EOF
 
-  # Create agent memory dirs with episodic subdirs
+  # Copy dispatch pipeline scripts so scripts that call them can resolve them
+  local tools_src="$BATS_TEST_DIRNAME/../../shared/tools"
+  for script in dispatch.sh agent_runner.sh build_system_prompt.sh llm_call.sh request_id.sh retry.sh current_task.sh; do
+    if [[ -f "$tools_src/$script" ]]; then
+      cp "$tools_src/$script" "$root/shared/tools/$script"
+      chmod +x "$root/shared/tools/$script"
+    fi
+  done
+  for cfg in model_routing.json schema_request.json schema_response.json; do
+    [[ -f "$tools_src/$cfg" ]] && cp "$tools_src/$cfg" "$root/shared/tools/$cfg" || true
+  done
+
+  # Create agent memory dirs with episodic subdirs and inbox/outbox
   for agent in speaker planer tasker prompter checker reviewer architecter deployer tester reoriginator; do
     mkdir -p "$root/shared/memory/$agent/episodic"
+    mkdir -p "$root/shared/memory/$agent/inbox"
+    mkdir -p "$root/shared/memory/$agent/outbox"
   done
 }
 
@@ -124,10 +138,12 @@ parlei_setup_mock_crontab() {
 if [[ "${1:-}" == "-l" ]]; then
   cat "$MOCK_CRONTAB_FILE" 2>/dev/null || true
 else
-  # Read from stdin and append to mock file
+  # Read from stdin and REPLACE the mock file (real crontab replaces, not appends)
+  local tmpf; tmpf="$(mktemp)"
   while IFS= read -r line; do
-    echo "$line" >> "$MOCK_CRONTAB_FILE"
+    echo "$line" >> "$tmpf"
   done
+  mv "$tmpf" "$MOCK_CRONTAB_FILE"
 fi
 EOF
   chmod +x "$MOCK_CRONTAB_DIR/crontab"
@@ -138,6 +154,60 @@ EOF
 parlei_teardown_mock_crontab() {
   rm -f "${MOCK_CRONTAB_FILE:-}"
   rm -rf "${MOCK_CRONTAB_DIR:-}"
+}
+
+# ── Mock dispatch ─────────────────────────────────────────────────────────────
+
+# Installs a mock dispatch.sh into the test shared/tools/ that returns a canned
+# response without calling any LLM. The mock echoes back item 1 with status
+# "confirmed" and notes containing the input context, so callers can parse it.
+# Usage: parlei_setup_mock_dispatch [root]
+parlei_setup_mock_dispatch() {
+  local root="${1:-$PARLEI_TEST_ROOT}"
+  mkdir -p "$root/shared/tools"
+  cat > "$root/shared/tools/dispatch.sh" << 'DISPATCH_MOCK_EOF'
+#!/usr/bin/env bash
+# Mock dispatch.sh — returns canned response for tests; never calls LLM.
+AGENT="${1:-unknown}"
+REQUEST_FILE="${2:-}"
+REQUEST_ID="req-mock-$(date '+%Y%m%d')-001"
+
+if [[ -f "$REQUEST_FILE" ]]; then
+  REQUEST_ID="$(python3 -c "
+import json,sys
+try:
+  d=json.load(open(sys.argv[1]))
+  print(d.get('request_id','req-mock-000'))
+except:
+  print('req-mock-000')
+" "$REQUEST_FILE" 2>/dev/null || echo 'req-mock-000')"
+fi
+
+CONTEXT=""
+if [[ -f "$REQUEST_FILE" ]]; then
+  CONTEXT="$(python3 -c "
+import json,sys
+try:
+  d=json.load(open(sys.argv[1]))
+  items=d.get('items',[])
+  print(items[0].get('context','') if items else '')
+except:
+  print('')
+" "$REQUEST_FILE" 2>/dev/null || true)"
+fi
+
+python3 -c "
+import json, sys
+ctx = sys.argv[3] if len(sys.argv) > 3 else 'Mock dispatch response.'
+print(json.dumps({
+  'from': sys.argv[1],
+  'to': 'mock_caller',
+  'request_id': sys.argv[2],
+  'items': [{'id': 1, 'status': 'confirmed', 'notes': 'Mock dispatch response.', 'output': ctx}]
+}))
+" "$AGENT" "$REQUEST_ID" "$CONTEXT"
+DISPATCH_MOCK_EOF
+  chmod +x "$root/shared/tools/dispatch.sh"
 }
 
 # ── Assertion helpers ─────────────────────────────────────────────────────────

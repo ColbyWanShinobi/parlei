@@ -12,7 +12,8 @@ setup() {
   parlei_setup_mock_crontab
 
   # Copy scripts into temp root so they have correct relative paths
-  cp -r "$REPO_ROOT/scripts" "$PARLEI_TEST_ROOT/scripts"
+  cp "$REPO_ROOT/scripts/"*.sh "$PARLEI_TEST_ROOT/scripts/"
+  chmod +x "$PARLEI_TEST_ROOT/scripts/"*.sh
   # Copy env config files
   [[ -f "$REPO_ROOT/CLAUDE.md" ]] && cp "$REPO_ROOT/CLAUDE.md" "$PARLEI_TEST_ROOT/CLAUDE.md"
   mkdir -p "$PARLEI_TEST_ROOT/bootstraps"

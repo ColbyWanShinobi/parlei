@@ -53,10 +53,13 @@ echo "Restoring from ${TARGET_DATE}..."
 # Extract into REPO_ROOT. The archive contains shared/ as a top-level path.
 # --strip-components is NOT used here because we want shared/ to land at its
 # correct location. backups/ is never inside the archive (excluded at backup time).
+# Remove shared/ before extraction so BSD tar (macOS) doesn't need --overwrite.
+# backups/ is excluded from archives, so it is never touched.
+rm -rf "$SHARED_DIR"
+
 if ! tar \
   -xzf "$ARCHIVE" \
   -C "$REPO_ROOT" \
-  --overwrite \
   2>&1; then
   echo "Error: extraction failed." >&2
   exit 1

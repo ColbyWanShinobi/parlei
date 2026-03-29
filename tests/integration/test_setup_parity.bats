@@ -10,7 +10,8 @@ setup() {
   parlei_create_shared_skeleton "$PARLEI_TEST_ROOT"
   parlei_setup_mock_crontab
 
-  cp -r "$REPO_ROOT/scripts" "$PARLEI_TEST_ROOT/scripts"
+  cp "$REPO_ROOT/scripts/"*.sh "$PARLEI_TEST_ROOT/scripts/"
+  chmod +x "$PARLEI_TEST_ROOT/scripts/"*.sh
   [[ -f "$REPO_ROOT/CLAUDE.md" ]] && cp "$REPO_ROOT/CLAUDE.md" "$PARLEI_TEST_ROOT/CLAUDE.md"
   mkdir -p "$PARLEI_TEST_ROOT/bootstraps"
   for f in AUGGIE.md CODEX.md OPENCLAW.md; do
