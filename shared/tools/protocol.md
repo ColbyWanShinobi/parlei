@@ -205,6 +205,43 @@ Review-er sends this immediately on finding a `critical` severity issue — does
 
 ---
 
+## 8. Dispatch Invocation
+
+All agent-to-agent communication is executed through the dispatch system. Speak-er is the only agent that initiates dispatches. No specialist invokes another specialist directly without an explicit lateral grant.
+
+### Invoking a specialist
+
+```bash
+bash shared/tools/dispatch.sh <agent-name> <request-json-file>
+```
+
+The dispatch script handles:
+- Per-agent file locking (prevents concurrent inbox/outbox collision)
+- Model selection from `shared/tools/model_routing.json`
+- System prompt assembly via `shared/tools/build_system_prompt.sh`
+- Subprocess invocation via `shared/tools/agent_runner.sh`
+- Inbox write / outbox archive
+- Schema validation of the response
+- Escalation envelope construction on runner failure
+
+The JSON response is returned on stdout. Exit code 0 means a response was received (even if items have `"status": "failed"`). Exit code 1 means the dispatch itself failed — an escalation envelope is on stdout.
+
+### Specialist agent context
+
+Each specialist runs in a fully isolated subprocess with:
+
+- Its own model (from `shared/tools/model_routing.json`)
+- Its own assembled system prompt (identity + personality + long-term memory + protocol + task spec)
+- Only the request JSON as input
+
+Specialists cannot read Speak-er's conversation history, session context, or any prior messages. All necessary information must be provided in the request envelope's `"context"` field. This is not a limitation — it is the design. Specialists are stateless workers; memory is Speak-er's responsibility.
+
+### Lateral dispatch (grant required)
+
+When Speak-er issues a lateral grant, the authorized agent may call `dispatch.sh` targeting its peer directly. The grant is scoped to a single named task and expires when both agents report completion to Speak-er. Speak-er must log every lateral grant in its session memory.
+
+---
+
 ## 7. Rules Summary
 
 | Rule | Detail |

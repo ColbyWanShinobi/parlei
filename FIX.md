@@ -48,12 +48,12 @@
 | FIX-013 | Fix `codex --quiet` invocation in `memory_optimize.sh` | `P1` | `done` |
 | FIX-014 | Update `memory_optimize.sh` to use `dispatch.sh` for LLM summarization | `P1` | `done` |
 | **Phase 4 — Update Bootstrap Files & Agent Specs** ||||
-| FIX-015 | Update `CLAUDE.md` — dispatch-aware Speak-er instructions | `P0` | `todo` |
-| FIX-016 | Update `bootstraps/AUGGIE.md` — dispatch-aware Speak-er instructions | `P1` | `todo` |
-| FIX-017 | Update `bootstraps/CODEX.md` — dispatch-aware + correct relative paths | `P1` | `todo` |
-| FIX-018 | Update `bootstraps/OPENCLAW.md` — dispatch-aware + correct relative paths | `P1` | `todo` |
-| FIX-019 | Update `shared/agents/speaker.md` — document dispatch delegation workflow | `P1` | `todo` |
-| FIX-020 | Update `shared/tools/protocol.md` — add real dispatch invocation section | `P1` | `todo` |
+| FIX-015 | Update `CLAUDE.md` — dispatch-aware Speak-er instructions | `P0` | `done` |
+| FIX-016 | Update `bootstraps/AUGGIE.md` — dispatch-aware Speak-er instructions | `P1` | `done` |
+| FIX-017 | Update `bootstraps/CODEX.md` — dispatch-aware + correct relative paths | `P1` | `done` |
+| FIX-018 | Update `bootstraps/OPENCLAW.md` — dispatch-aware + correct relative paths | `P1` | `done` |
+| FIX-019 | Update `shared/agents/speaker.md` — document dispatch delegation workflow | `P1` | `done` |
+| FIX-020 | Update `shared/tools/protocol.md` — add real dispatch invocation section | `P1` | `done` |
 | **Phase 5 — Setup Script & Infrastructure** ||||
 | FIX-021 | Update `setup.sh` — create inbox/outbox dirs, validate new tool scripts | `P0` | `todo` |
 | **Phase 6 — Tests** ||||
