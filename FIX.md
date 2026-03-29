@@ -41,12 +41,12 @@
 | FIX-007 | Add `model` field to each agent definition file | `P1` | `done` |
 | FIX-008 | Record model routing decisions as ADR-011 in `ARCHITECTURE.md` | `P2` | `done` |
 | **Phase 3 — Real Multi-Process Agent Dispatch** ||||
-| FIX-009 | Create inbox and outbox directories for all agents | `P0` | `todo` |
-| FIX-010 | Write `shared/tools/build_system_prompt.sh` | `P0` | `todo` |
-| FIX-011 | Write `shared/tools/agent_runner.sh` | `P0` | `todo` |
-| FIX-012 | Write `shared/tools/dispatch.sh` | `P0` | `todo` |
-| FIX-013 | Fix `codex --quiet` invocation in `memory_optimize.sh` | `P1` | `todo` |
-| FIX-014 | Update `memory_optimize.sh` to use `dispatch.sh` for LLM summarization | `P1` | `todo` |
+| FIX-009 | Create inbox and outbox directories for all agents | `P0` | `done` |
+| FIX-010 | Write `shared/tools/build_system_prompt.sh` | `P0` | `done` |
+| FIX-011 | Write `shared/tools/agent_runner.sh` | `P0` | `done` |
+| FIX-012 | Write `shared/tools/dispatch.sh` | `P0` | `done` |
+| FIX-013 | Fix `codex --quiet` invocation in `memory_optimize.sh` | `P1` | `done` |
+| FIX-014 | Update `memory_optimize.sh` to use `dispatch.sh` for LLM summarization | `P1` | `done` |
 | **Phase 4 — Update Bootstrap Files & Agent Specs** ||||
 | FIX-015 | Update `CLAUDE.md` — dispatch-aware Speak-er instructions | `P0` | `todo` |
 | FIX-016 | Update `bootstraps/AUGGIE.md` — dispatch-aware Speak-er instructions | `P1` | `todo` |
@@ -65,7 +65,7 @@
 | FIX-027 | Integration test: Speak-er dispatches to a specialist, gets a valid response | `P1` | `todo` |
 | FIX-028 | Integration test: dispatch respects model_routing.json | `P2` | `todo` |
 | **Phase 7 — Concurrency & Safety** ||||
-| FIX-029 | Add file lock to `dispatch.sh` to prevent concurrent inbox/outbox collisions | `P2` | `todo` |
+| FIX-029 | Add file lock to `dispatch.sh` to prevent concurrent inbox/outbox collisions | `P2` | `done` |
 
 ---
 

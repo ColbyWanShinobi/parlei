@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # memory_optimize.sh — Nightly memory optimization for all Parlei agents.
 # Runs deduplication, episodic-to-long-term promotion, age pruning,
-# and tool-native LLM summarization for each agent.
-# Summarization is invoked via the active environment's own CLI (claude, codex,
-# openclaw). Augment has no CLI and skips summarization. The active environment
-# is read from .parlei-env at the repo root.
+# and LLM summarization for each agent.
+# Summarization is delegated to Prompt-er via dispatch.sh, which handles
+# model selection and environment differences automatically.
 
 set -euo pipefail
 
@@ -36,49 +35,6 @@ fi
 
 RETENTION_DAYS="$(python3 -c "import json,sys; d=json.load(open('$CONFIG_FILE')); print(d.get('episodic_retention_days', 90))")"
 PROMOTION_THRESHOLD="$(python3 -c "import json,sys; d=json.load(open('$CONFIG_FILE')); print(d.get('promotion_threshold', 3))")"
-LLM_MODEL="$(python3 -c "import json,sys; d=json.load(open('$CONFIG_FILE')); print(d.get('llm_model', ''))")"
-
-# Read active environment from .parlei-env
-ENV=""
-ENV_FILE="$REPO_ROOT/.parlei-env"
-if [[ -f "$ENV_FILE" ]]; then
-  ENV="$(tr -d '[:space:]' < "$ENV_FILE")"
-fi
-
-# ── Tool-native LLM invocation ────────────────────────────────────────────────
-# Each environment uses its own CLI to run the summarization prompt.
-# Augment has no standalone CLI and is explicitly excluded.
-# MODEL_FLAG is empty when llm_model is unset; each CLI accepts --model or
-# falls back to its own configured default.
-
-MODEL_FLAG=()
-[[ -n "$LLM_MODEL" ]] && MODEL_FLAG=(--model "$LLM_MODEL")
-
-invoke_tool_llm() {
-  local prompt="$1"
-  case "$ENV" in
-    claude)
-      # Claude Code CLI: --print runs non-interactively and writes to stdout.
-      printf '%s' "$prompt" | claude --print "${MODEL_FLAG[@]}"
-      ;;
-    codex)
-      # Codex CLI (github.com/openai/codex): --quiet suppresses interactive UI.
-      printf '%s' "$prompt" | codex --quiet "${MODEL_FLAG[@]}"
-      ;;
-    openclaw)
-      # OpenClaw CLI: mirrors Claude Code's --print interface.
-      printf '%s' "$prompt" | openclaw --print "${MODEL_FLAG[@]}"
-      ;;
-    augment)
-      # Augment is an editor extension with no standalone CLI.
-      # Summarization is not available in the cron context for this environment.
-      return 1
-      ;;
-    *)
-      return 1
-      ;;
-  esac
-}
 
 TOTAL_DEDUPED=0
 TOTAL_PROMOTED=0
@@ -161,31 +117,67 @@ for AGENT in "${AGENTS[@]}"; do
   done
   TOTAL_PRUNED=$((TOTAL_PRUNED + PRUNED))
 
-  # ── Step 4: LLM summarization of long_term.md ────────────────────────────
-  # Invoked via the active environment's own CLI (claude, codex, openclaw).
-  # Skipped silently when ENV is "augment", unknown, or unset.
+  # ── Step 4: LLM summarization via Prompt-er dispatch ────────────────────
+  # Delegates to Prompt-er via dispatch.sh, which handles model selection
+  # and environment differences. Skipped if long_term.md does not exist.
 
-  case "$ENV" in
-    claude|codex|openclaw)
-      if [[ -f "$LONG_TERM" ]]; then
-        CURRENT_CONTENT="$(cat "$LONG_TERM")"
-        PROMPT="You are a memory optimizer for an AI agent named ${AGENT}. The following is this agent's long-term memory file. Rewrite it to be more concise and deduplicated, preserving all important facts and rules. Keep all JSON code blocks intact. Output only the rewritten file contents, no commentary. Memory file:
+  if [[ -f "$LONG_TERM" ]]; then
+    CURRENT_CONTENT="$(cat "$LONG_TERM")"
+    SUM_REQUEST_ID="req-memory-optimize-$(date '+%Y%m%d')-$(printf '%03d' $(( RANDOM % 1000 )))"
+    SUM_REQUEST_FILE="$(mktemp)"
 
-${CURRENT_CONTENT}"
+    python3 -c "
+import json, sys
+req = {
+    'from': 'memory_optimize',
+    'to': 'prompter',
+    'request_id': sys.argv[1],
+    'items': [{
+        'id': 1,
+        'type': 'summarize',
+        'description': (
+            'Rewrite this agent long-term memory file to be more concise and '
+            'deduplicated, preserving all important facts and rules. Keep all '
+            'JSON code blocks intact. Output only the rewritten file contents, '
+            'no preamble or commentary.'
+        ),
+        'context': sys.argv[2]
+    }]
+}
+print(json.dumps(req))
+" "$SUM_REQUEST_ID" "$CURRENT_CONTENT" > "$SUM_REQUEST_FILE"
 
-        RESPONSE="$(invoke_tool_llm "$PROMPT" 2>&1)" || {
-          log_error "$AGENT" "llm_summarize" "tool invocation failed: $RESPONSE"
-          continue
-        }
+    DISPATCH_RESPONSE="$(bash "$REPO_ROOT/shared/tools/dispatch.sh" prompter "$SUM_REQUEST_FILE" 2>&1)" || {
+      log_error "$AGENT" "llm_summarize" "dispatch to prompter failed: $DISPATCH_RESPONSE"
+      rm -f "$SUM_REQUEST_FILE"
+      continue
+    }
+    rm -f "$SUM_REQUEST_FILE"
 
-        if [[ -n "$RESPONSE" ]]; then
-          echo "$RESPONSE" > "$LONG_TERM"
-        else
-          log_error "$AGENT" "llm_summarize" "tool returned empty response"
-        fi
-      fi
-      ;;
-  esac
+    SUMMARY="$(python3 -c "
+import json, sys
+try:
+    d = json.loads(sys.argv[1])
+    for item in d.get('items', []):
+        if item.get('id') == 1:
+            # Prefer 'output' (inline content); fall back to 'notes'
+            text = item.get('output') or item.get('notes', '')
+            print(text)
+            break
+except Exception as e:
+    print(f'parse error: {e}', file=sys.stderr)
+    sys.exit(1)
+" "$DISPATCH_RESPONSE" 2>/dev/null)" || {
+      log_error "$AGENT" "llm_summarize" "could not parse Prompt-er response"
+      continue
+    }
+
+    if [[ -n "$SUMMARY" ]]; then
+      printf '%s\n' "$SUMMARY" > "$LONG_TERM"
+    else
+      log_error "$AGENT" "llm_summarize" "Prompt-er returned empty summary"
+    fi
+  fi
 
 done
 
