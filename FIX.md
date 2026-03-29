@@ -55,7 +55,7 @@
 | FIX-019 | Update `shared/agents/speaker.md` — document dispatch delegation workflow | `P1` | `done` |
 | FIX-020 | Update `shared/tools/protocol.md` — add real dispatch invocation section | `P1` | `done` |
 | **Phase 5 — Setup Script & Infrastructure** ||||
-| FIX-021 | Update `setup.sh` — create inbox/outbox dirs, validate new tool scripts | `P0` | `todo` |
+| FIX-021 | Update `setup.sh` — create inbox/outbox dirs, validate new tool scripts | `P0` | `done` |
 | **Phase 6 — Tests** ||||
 | FIX-022 | Fix all existing failing tests (prompts dir, grep -P, config fields) | `P0` | `todo` |
 | FIX-023 | Unit tests for `build_system_prompt.sh` | `P1` | `todo` |

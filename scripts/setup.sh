@@ -52,6 +52,42 @@ if [[ ! -d "$BACKUPS_DIR" ]]; then
   echo "Created: $BACKUPS_DIR"
 fi
 
+# ── Create agent inbox/outbox directories (idempotent) ───────────────────────
+# Each agent needs an inbox and outbox for the dispatch IPC system.
+# .gitkeep files ensure the directories are tracked in version control.
+
+AGENTS=(speaker planer tasker prompter checker reviewer architecter deployer tester reoriginator)
+
+for AGENT in "${AGENTS[@]}"; do
+  AGENT_MEM="$SHARED_DIR/memory/$AGENT"
+  for dir in inbox outbox; do
+    if [[ ! -d "$AGENT_MEM/$dir" ]]; then
+      mkdir -p "$AGENT_MEM/$dir"
+      touch "$AGENT_MEM/$dir/.gitkeep"
+      echo "Created: $AGENT_MEM/$dir"
+    fi
+  done
+done
+
+# ── Ensure dispatch scripts are executable ────────────────────────────────────
+
+DISPATCH_SCRIPTS=(
+  "$SHARED_DIR/tools/dispatch.sh"
+  "$SHARED_DIR/tools/agent_runner.sh"
+  "$SHARED_DIR/tools/build_system_prompt.sh"
+  "$SHARED_DIR/tools/request_id.sh"
+  "$SHARED_DIR/tools/retry.sh"
+  "$SHARED_DIR/tools/current_task.sh"
+  "$SHARED_DIR/tools/llm_call.sh"
+)
+
+for script in "${DISPATCH_SCRIPTS[@]}"; do
+  if [[ -f "$script" && ! -x "$script" ]]; then
+    chmod +x "$script"
+    echo "Made executable: $script"
+  fi
+done
+
 # ── Symlink creation ──────────────────────────────────────────────────────────
 # Each environment config file references shared/ paths. We create a symlink
 # at the repo root named "shared" pointing to ./shared (already exists as a
@@ -127,6 +163,43 @@ for dir in "${REQUIRED_DIRS[@]}"; do
     echo "Error: post-setup validation failed — missing: $dir"
     VALIDATION_ERRORS=$((VALIDATION_ERRORS + 1))
   fi
+done
+
+# Confirm dispatch scripts exist and are executable
+REQUIRED_SCRIPTS=(
+  "$SHARED_DIR/tools/dispatch.sh"
+  "$SHARED_DIR/tools/agent_runner.sh"
+  "$SHARED_DIR/tools/build_system_prompt.sh"
+)
+REQUIRED_CONFIGS=(
+  "$SHARED_DIR/tools/model_routing.json"
+)
+
+for script in "${REQUIRED_SCRIPTS[@]}"; do
+  if [[ ! -f "$script" ]]; then
+    echo "Error: required script missing: $script"
+    VALIDATION_ERRORS=$((VALIDATION_ERRORS + 1))
+  elif [[ ! -x "$script" ]]; then
+    echo "Error: required script not executable: $script"
+    VALIDATION_ERRORS=$((VALIDATION_ERRORS + 1))
+  fi
+done
+
+for config in "${REQUIRED_CONFIGS[@]}"; do
+  if [[ ! -f "$config" ]]; then
+    echo "Error: required config missing: $config"
+    VALIDATION_ERRORS=$((VALIDATION_ERRORS + 1))
+  fi
+done
+
+# Confirm agent inbox/outbox directories exist
+for AGENT in "${AGENTS[@]}"; do
+  for dir in inbox outbox; do
+    if [[ ! -d "$SHARED_DIR/memory/$AGENT/$dir" ]]; then
+      echo "Error: post-setup validation failed — missing: shared/memory/$AGENT/$dir"
+      VALIDATION_ERRORS=$((VALIDATION_ERRORS + 1))
+    fi
+  done
 done
 
 if [[ $VALIDATION_ERRORS -gt 0 ]]; then
