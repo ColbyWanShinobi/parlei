@@ -57,13 +57,13 @@
 | **Phase 5 — Setup Script & Infrastructure** ||||
 | FIX-021 | Update `setup.sh` — create inbox/outbox dirs, validate new tool scripts | `P0` | `done` |
 | **Phase 6 — Tests** ||||
-| FIX-022 | Fix all existing failing tests (prompts dir, grep -P, config fields) | `P0` | `todo` |
-| FIX-023 | Unit tests for `build_system_prompt.sh` | `P1` | `todo` |
-| FIX-024 | Unit tests for `agent_runner.sh` | `P1` | `todo` |
-| FIX-025 | Unit tests for `dispatch.sh` | `P1` | `todo` |
-| FIX-026 | Unit test: model routing — correct model selected per agent | `P1` | `todo` |
-| FIX-027 | Integration test: Speak-er dispatches to a specialist, gets a valid response | `P1` | `todo` |
-| FIX-028 | Integration test: dispatch respects model_routing.json | `P2` | `todo` |
+| FIX-022 | Fix all existing failing tests (prompts dir, grep -P, config fields) | `P0` | `done` |
+| FIX-023 | Unit tests for `build_system_prompt.sh` | `P1` | `done` |
+| FIX-024 | Unit tests for `agent_runner.sh` | `P1` | `done` |
+| FIX-025 | Unit tests for `dispatch.sh` | `P1` | `done` |
+| FIX-026 | Unit test: model routing — correct model selected per agent | `P1` | `done` |
+| FIX-027 | Integration test: Speak-er dispatches to a specialist, gets a valid response | `P1` | `done` |
+| FIX-028 | Integration test: dispatch respects model_routing.json | `P2` | `done` |
 | **Phase 7 — Concurrency & Safety** ||||
 | FIX-029 | Add file lock to `dispatch.sh` to prevent concurrent inbox/outbox collisions | `P2` | `done` |
 

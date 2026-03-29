@@ -90,13 +90,21 @@ EOF
 }
 
 @test "llm_call: returns response text from mock LLM endpoint" {
-  parlei_start_mock_llm "Test response from mock"
-  run bash "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh" \
-    "http://127.0.0.1:$MOCK_LLM_PORT/v1/chat/completions" \
+  CURL_STUB_DIR="$(mktemp -d)"
+  cat > "$CURL_STUB_DIR/curl" <<'CURL_EOF'
+#!/usr/bin/env bash
+echo '{"choices":[{"message":{"content":"Test response from mock"}}]}'
+CURL_EOF
+  chmod +x "$CURL_STUB_DIR/curl"
+
+  PATH="$CURL_STUB_DIR:$PATH" run bash "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh" \
+    "http://127.0.0.1/v1/chat/completions" \
     "test-model" \
     "Hello"
   [ "$status" -eq 0 ]
   [[ "$output" == *"Test response from mock"* ]]
+
+  rm -rf "$CURL_STUB_DIR"
 }
 
 @test "llm_call: exits non-zero when endpoint is unreachable" {

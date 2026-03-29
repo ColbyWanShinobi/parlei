@@ -126,6 +126,51 @@ print('ok' if 'sonnet' in model.lower() else f'expected sonnet, got: {model}')
   [ "$output" = "ok" ]
 }
 
+@test "model_routing: planer/prompter/deployer/tester use sonnet models" {
+  run python3 -c "
+import json, sys
+d = json.load(open('$ROUTING'))
+sonnet_agents = ['planer','prompter','deployer','tester']
+for agent in sonnet_agents:
+    model = d[agent]['model']
+    if 'sonnet' not in model.lower():
+        print(f'{agent} expected sonnet, got: {model}')
+        sys.exit(1)
+print('ok')
+"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
+}
+
+@test "model_routing: architecter uses opus model (architecture decisions)" {
+  run python3 -c "
+import json
+d = json.load(open('$ROUTING'))
+model = d['architecter']['model']
+print('ok' if 'opus' in model.lower() else f'expected opus, got: {model}')
+"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
+}
+
+@test "model_routing: models follow claude-<tier>-<digits> format" {
+  run python3 -c "
+import json, re, sys
+d = json.load(open('$ROUTING'))
+pattern = re.compile(r'^claude-[a-z]+-[0-9]+(?:-[0-9]+)*$')
+for agent, entry in d.items():
+    if agent.startswith('_'):
+        continue
+    model = entry.get('model','')
+    if not pattern.match(model):
+        print(f'{agent} has invalid model: {model}')
+        sys.exit(1)
+print('ok')
+"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
+}
+
 @test "model_routing: no model values are empty strings" {
   run python3 -c "
 import json

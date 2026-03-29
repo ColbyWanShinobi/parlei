@@ -75,21 +75,23 @@ teardown() {
 
 # ── Successful dispatch ───────────────────────────────────────────────────────
 
-@test "dispatch: exits 0 for valid agent and request" {
-  run bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json"
-  [ "$status" -eq 0 ]
-}
-
-@test "dispatch: output is valid JSON" {
-  run bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json"
-  [ "$status" -eq 0 ]
-  python3 -c "import json,sys; json.loads(sys.argv[1])" "$output"
-}
-
 @test "dispatch: writes response to outbox" {
   bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json" > /dev/null
   OUTBOX="$PARLEI_TEST_ROOT/shared/memory/speaker/outbox"
   [ "$(ls "$OUTBOX"/*.json 2>/dev/null | wc -l)" -gt 0 ]
+}
+
+@test "dispatch: exits 0 for valid agent and request" {
+  OUTPUT="$(bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json" 2>&1)"
+  STATUS=$?
+  [ "$STATUS" -eq 0 ]
+}
+
+@test "dispatch: output is valid JSON" {
+  OUTPUT="$(bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json" 2>&1)"
+  STATUS=$?
+  [ "$STATUS" -eq 0 ]
+  python3 -c "import json,sys; json.loads(sys.argv[1])" "$OUTPUT"
 }
 
 @test "dispatch: removes inbox file after success" {
@@ -99,6 +101,42 @@ teardown() {
   [ "$INBOX_JSON_COUNT" -eq 0 ]
 }
 
+
+@test "dispatch: inbox path uses request_id naming" {
+  REQUEST_ID="$(python3 -c "import json; print(json.load(open('$PARLEI_TEST_ROOT/request.json'))['request_id'])")"
+  PATCHED="$PARLEI_TEST_ROOT/shared/tools/dispatch_no_rm.sh"
+  CAPTURE="$PARLEI_TEST_ROOT/last_inbox_path.txt"
+
+  python3 - <<PY
+from pathlib import Path
+import os
+
+root = os.environ["PARLEI_TEST_ROOT"]
+src = Path(root) / "shared/tools/dispatch.sh"
+patched = Path(root) / "shared/tools/dispatch_no_rm.sh"
+patched.write_text(src.read_text().replace('rm -f "$INBOX_FILE"', '# rm -f "$INBOX_FILE"'))
+PY
+  chmod +x "$PATCHED"
+
+  DISPATCH_CAPTURE_PATH="$CAPTURE" \
+  bash "$PATCHED" speaker "$PARLEI_TEST_ROOT/request.json"
+  [ "$?" -eq 0 ]
+
+  INBOX_FILE="$(cat "$CAPTURE")"
+  EXPECTED="$PARLEI_TEST_ROOT/shared/memory/speaker/inbox/${REQUEST_ID}.json"
+  [ "$INBOX_FILE" = "$EXPECTED" ]
+
+  rm -f "$CAPTURE" "$PATCHED"
+}
+
+@test "dispatch: outbox file named after request_id" {
+  REQUEST_ID="$(python3 -c "import json; print(json.load(open('$PARLEI_TEST_ROOT/request.json'))['request_id'])")"
+
+  bash "$PARLEI_TEST_ROOT/shared/tools/dispatch.sh" speaker "$PARLEI_TEST_ROOT/request.json"
+  [ "$?" -eq 0 ]
+  OUTBOX_FILE="$PARLEI_TEST_ROOT/shared/memory/speaker/outbox/${REQUEST_ID}.json"
+  [ -f "$OUTBOX_FILE" ]
+}
 # ── Escalation on runner failure ──────────────────────────────────────────────
 
 @test "dispatch: exits 1 and returns escalation envelope when runner fails" {

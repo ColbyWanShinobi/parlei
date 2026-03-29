@@ -122,6 +122,9 @@ cp "$REQUEST_FILE" "$INBOX_FILE"
 
 RUNNER_OUTPUT=""
 RUNNER_EXIT=0
+if [[ -n "${DISPATCH_CAPTURE_PATH:-}" ]]; then
+  printf '%s\n' "$INBOX_FILE" > "$DISPATCH_CAPTURE_PATH"
+fi
 RUNNER_OUTPUT="$("$SCRIPT_DIR/agent_runner.sh" "$AGENT" "$INBOX_FILE" 2>&1)" || RUNNER_EXIT=$?
 
 if [[ $RUNNER_EXIT -ne 0 ]]; then

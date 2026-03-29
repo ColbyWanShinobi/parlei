@@ -80,6 +80,34 @@ teardown() {
   [[ "$output" == *"Speaker Identity"* ]]
 }
 
+@test "build_system_prompt: output contains Identity section header" {
+  run bash "$PARLEI_TEST_ROOT/shared/tools/build_system_prompt.sh" speaker
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"## Identity"* ]]
+}
+
+@test "build_system_prompt: output contains Long-Term Memory section header and content" {
+  run bash "$PARLEI_TEST_ROOT/shared/tools/build_system_prompt.sh" speaker
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"## Long-Term Memory"* ]]
+  [[ "$output" == *"Speaker Long Term"* ]]
+}
+
+@test "build_system_prompt: produces non-empty output for every known agent" {
+  agents=(speaker planer tasker prompter checker reviewer architecter deployer tester reoriginator)
+  for agent in "${agents[@]}"; do
+    mkdir -p "$PARLEI_TEST_ROOT/shared/personalities"
+    echo "# ${agent} Role" > "$PARLEI_TEST_ROOT/shared/agents/${agent}.md"
+    echo "# ${agent} Personality" > "$PARLEI_TEST_ROOT/shared/personalities/${agent}.md"
+    mkdir -p "$PARLEI_TEST_ROOT/shared/memory/${agent}"
+    echo "# ${agent} Identity" > "$PARLEI_TEST_ROOT/shared/memory/${agent}/identity.md"
+    echo "# ${agent} Long Term" > "$PARLEI_TEST_ROOT/shared/memory/${agent}/long_term.md"
+    run bash "$PARLEI_TEST_ROOT/shared/tools/build_system_prompt.sh" "$agent"
+    [ "$status" -eq 0 ]
+    [[ -n "$output" ]]
+  done
+}
+
 # ── Missing file handling ─────────────────────────────────────────────────────
 
 @test "build_system_prompt: still succeeds when personality file is missing" {
