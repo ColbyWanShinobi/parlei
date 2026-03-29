@@ -1,0 +1,23 @@
+# Runtime environment marker written by setup.sh
+.parlei-env
+
+# Backup archives
+backups/*.tar.gz
+backups/*.tar.zst
+backups/cron.log
+backups/error_log.md
+
+# Runtime memory files — logs, state, IPC
+shared/memory/optimize_log.md
+shared/memory/error_log.md
+shared/memory/cron.log
+shared/memory/**/episodic/
+shared/memory/**/.retry_state/
+shared/memory/**/.request_id_state
+shared/memory/**/current_task.md
+shared/memory/**/inbox/
+shared/memory/**/outbox/
+
+# Dispatch lock files (FIX-029)
+shared/memory/**/.dispatch.lock
+shared/memory/**/.dispatch.lock.d/

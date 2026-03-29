@@ -75,6 +75,9 @@ try:
     # OpenAI-compatible: choices[0].message.content
     if 'choices' in data:
         print(data['choices'][0]['message']['content'])
+    # Anthropic Messages API: content[0].text
+    elif 'content' in data and isinstance(data['content'], list) and data['content']:
+        print(data['content'][0].get('text', ''))
     # Ollama-compatible: message.content
     elif 'message' in data:
         print(data['message']['content'])

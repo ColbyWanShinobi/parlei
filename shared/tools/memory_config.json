@@ -1,5 +1,8 @@
 {
+  "llm_endpoint": "",
   "llm_model": "",
+  "llm_auth_token": "",
+  "llm_timeout_seconds": 30,
   "episodic_retention_days": 90,
   "promotion_threshold": 3,
   "backup_retention_count": 30,

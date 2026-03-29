@@ -31,11 +31,11 @@
 | ID | Title | Priority | Status |
 |---|---|---|---|
 | **Phase 1 — Critical Bug Fixes** ||||
-| FIX-001 | Create missing `shared/prompts/` directory | `P0` | `todo` |
-| FIX-002 | Add missing fields to `memory_config.json` | `P0` | `todo` |
-| FIX-003 | Fix `grep -Pn` → `grep -En` in test fixtures | `P1` | `todo` |
-| FIX-004 | Add `.gitignore` for generated and runtime files | `P2` | `todo` |
-| FIX-005 | Add Anthropic native response format to `llm_call.sh` | `P1` | `todo` |
+| FIX-001 | Create missing `shared/prompts/` directory | `P0` | `done` |
+| FIX-002 | Add missing fields to `memory_config.json` | `P0` | `done` |
+| FIX-003 | Fix `grep -Pn` → `grep -En` in test fixtures | `P1` | `done` |
+| FIX-004 | Add `.gitignore` for generated and runtime files | `P2` | `done` |
+| FIX-005 | Add Anthropic native response format to `llm_call.sh` | `P1` | `done` |
 | **Phase 2 — Model Routing Configuration** ||||
 | FIX-006 | Create `shared/tools/model_routing.json` | `P0` | `todo` |
 | FIX-007 | Add `model` field to each agent definition file | `P1` | `todo` |
@@ -64,6 +64,8 @@
 | FIX-026 | Unit test: model routing — correct model selected per agent | `P1` | `todo` |
 | FIX-027 | Integration test: Speak-er dispatches to a specialist, gets a valid response | `P1` | `todo` |
 | FIX-028 | Integration test: dispatch respects model_routing.json | `P2` | `todo` |
+| **Phase 7 — Concurrency & Safety** ||||
+| FIX-029 | Add file lock to `dispatch.sh` to prevent concurrent inbox/outbox collisions | `P2` | `todo` |
 
 ---
 
@@ -756,6 +758,77 @@ necessary context must be provided in the request envelope's "context" field.
 
 ---
 
+## 🔒 Phase 7 — Concurrency & Safety
+
+---
+
+### FIX-029 — Add file lock to `dispatch.sh` to prevent concurrent inbox/outbox collisions
+
+**Priority:** P2
+**Type:** `feature`
+**Blocked by:** FIX-012 (`dispatch.sh` must exist first)
+
+**Problem:** `dispatch.sh` writes to `shared/memory/<agent>/inbox/<request_id>.json` and reads from `shared/memory/<agent>/outbox/<request_id>.json`. If two Speak-er sessions dispatch to the same agent simultaneously, or if a long-running session issues two parallel dispatches, a race condition can occur:
+
+1. Both processes generate the same request ID (unlikely but possible if both run in the same second before `request_id.sh` increments the counter).
+2. Both processes write to the same inbox path, with the second overwriting the first.
+3. The outbox response for request A is consumed by the waiter for request B.
+
+The result is a silently corrupted response delivered to the wrong caller.
+
+**Work:**
+
+Use `flock` (available on Linux and macOS via `util-linux` / `brew install util-linux`) to acquire a per-agent lock file before writing to the inbox and release it after the outbox response is written.
+
+- **Lock file location:** `shared/memory/<agent>/.dispatch.lock` — one lock per agent, not one per request.
+- **Lock scope:** Held from inbox write through outbox read. This serializes concurrent dispatches to the same agent, which is correct behavior — the agent subprocess is a single-process LLM call and cannot handle parallel requests anyway.
+- **Lock acquisition:** Use a timeout (default: 60 seconds) so a hung dispatch does not permanently block other callers. If the lock cannot be acquired within the timeout, exit 1 with a clear error message indicating which agent is locked and how long was waited.
+- **Portability:** `flock` is not available on macOS by default. Detect its presence; if absent, fall back to a `mkdir`-based lock (atomic on POSIX: `mkdir .dispatch.lock.d` succeeds only once).
+
+**Lock implementation in `dispatch.sh`:**
+
+```bash
+LOCK_FILE="$AGENT_DIR/.dispatch.lock"
+LOCK_TIMEOUT=60
+
+# Prefer flock if available; fall back to mkdir-based lock
+if command -v flock &>/dev/null; then
+  exec {LOCK_FD}>"$LOCK_FILE"
+  flock --timeout "$LOCK_TIMEOUT" "$LOCK_FD" || {
+    echo "Error: could not acquire lock for agent $AGENT after ${LOCK_TIMEOUT}s" >&2
+    exit 1
+  }
+  # ... dispatch work ...
+  flock --unlock "$LOCK_FD"
+else
+  LOCK_DIR="${LOCK_FILE}.d"
+  DEADLINE=$(( $(date +%s) + LOCK_TIMEOUT ))
+  until mkdir "$LOCK_DIR" 2>/dev/null; do
+    [[ $(date +%s) -lt $DEADLINE ]] || {
+      echo "Error: could not acquire lock for agent $AGENT after ${LOCK_TIMEOUT}s" >&2
+      exit 1
+    }
+    sleep 0.5
+  done
+  trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+  # ... dispatch work ...
+  rmdir "$LOCK_DIR" 2>/dev/null || true
+  trap - EXIT
+fi
+```
+
+**Add `.dispatch.lock` and `.dispatch.lock.d` to `.gitignore`** (see FIX-004 — update that task if already complete).
+
+**Unit tests to add to `tests/unit/test_dispatch.bats`** (extend FIX-025):
+- Lock file is created during dispatch and removed (or released) after.
+- A second concurrent dispatch to the same agent blocks until the first completes.
+- A dispatch that cannot acquire the lock within the timeout exits 1 with a descriptive error.
+- `flock` fallback: if `flock` is not in PATH, the `mkdir` lock mechanism is used instead.
+
+**Completion condition:** Two concurrent `dispatch.sh` calls to the same agent (using a slow mock runner that sleeps 1 second) produce two separate, correct outbox files with no interleaving. Lock file is absent after both dispatches complete. Timeout test exits 1 within `LOCK_TIMEOUT + 1` seconds when a lock is held by a background process.
+
+---
+
 ## 🔗 Dependency Order
 
 Execute phases in order. Within a phase, complete P0 tasks before P1, P1 before P2.
@@ -835,4 +908,4 @@ Each specialist runs in **complete isolation**: its own model, its own assembled
 | Token limits in system prompts | `build_system_prompt.sh` concatenates 6 files — if `long_term.md` is large, the assembled prompt may exceed model limits | Add a `--max-tokens` guard to `build_system_prompt.sh`; run memory optimization before dispatch if prompt is too large |
 | Codex CLI interface instability | OpenAI's Codex CLI is a newer tool; its non-interactive interface is less stable than Claude Code's | `codex` env falls back to `llm_call.sh` (FIX-013); if the Codex CLI gains a `--print` equivalent, update `agent_runner.sh` |
 | OpenClaw availability | OpenClaw is a newer tool; its `--print` interface may not exist yet | `openclaw` env can fall back to `llm_call.sh` if needed; update when stable CLI is confirmed |
-| Concurrent dispatch race conditions | Two parallel dispatches to the same agent could collide on inbox/outbox filenames | Request IDs include timestamps and sequence numbers — collisions are unlikely but not impossible; a file lock could be added in v2 |
+| Concurrent dispatch race conditions | Two parallel dispatches to the same agent could collide on inbox/outbox filenames | Addressed by FIX-029: per-agent `flock`/`mkdir` lock with configurable timeout |

@@ -161,7 +161,7 @@ assert_valid_json() {
 # Assert a file contains no YAML patterns.
 assert_no_yaml() {
   local file="$1"
-  if grep -Pn '^---\s*$' "$file" &>/dev/null; then
+  if grep -En '^---[[:space:]]*$' "$file" &>/dev/null; then
     echo "FAIL: YAML frontmatter found in $file"
     return 1
   fi
