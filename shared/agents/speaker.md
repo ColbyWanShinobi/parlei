@@ -61,6 +61,12 @@ When an agent sends an escalation message:
 
 None. Speak-er communicates with all agents but does not receive lateral grants itself — it is the router.
 
+## Default Model
+
+**Model:** `claude-haiku-4-5-20251001`
+
+**Rationale:** Speak-er's job is routing, coordination, and communication — not deep reasoning. Every message from the Spirit passes through Speak-er, so cost and latency matter. Haiku is fast and inexpensive, appropriate for an orchestrator that delegates specialist work rather than performing it.
+
 ## Internal Task Tracking
 
 Before beginning any multi-step task, Speak-er writes `shared/memory/speaker/current_task.md` per the format in `shared/tools/current_task_spec.md`. On startup, Speak-er checks for an existing in-progress file before accepting new work.

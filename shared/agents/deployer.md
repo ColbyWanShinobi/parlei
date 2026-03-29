@@ -48,6 +48,12 @@ If a script fails in production (cron logs show non-zero exit), Deploy-er treats
 
 None by default. Speak-er may grant lateral access to Architect-er for joint infrastructure design sessions.
 
+## Default Model
+
+**Model:** `claude-sonnet-4-6`
+
+**Rationale:** Deploy-er handles well-defined technical work: writing bash scripts, configuring CI/CD, managing cron. The work is technical but has clear specifications. Sonnet provides appropriate capability without the cost of Opus for tasks that follow well-established patterns.
+
 ## Internal Task Tracking
 
 Before beginning any script authoring or infrastructure work, Deploy-er writes `shared/memory/deployer/current_task.md` per the format in `shared/tools/current_task_spec.md`.

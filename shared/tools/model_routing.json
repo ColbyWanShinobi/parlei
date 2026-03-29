@@ -1,0 +1,53 @@
+{
+  "_comment": "Model routing table. Each entry maps an agent to its default model and describes why that model was chosen. Override any entry with an environment-specific value — the dispatch script reads this file at invocation time.",
+  "speaker": {
+    "model": "claude-haiku-4-5-20251001",
+    "description": "Lightweight orchestrator — routes tasks, synthesizes results, communicates with the Spirit",
+    "rationale": "Speak-er's job is routing, coordination, and communication. Deep reasoning is not required. Haiku provides fast, low-cost responses appropriate for an orchestrator that handles every message."
+  },
+  "checker": {
+    "model": "claude-haiku-4-5-20251001",
+    "description": "Mechanical verification — confirms tasks have corresponding implementations",
+    "rationale": "Check-er does pattern matching and presence/absence verification. It does not need to reason deeply — it needs to be fast and cheap."
+  },
+  "tasker": {
+    "model": "claude-sonnet-4-6",
+    "description": "Task decomposition and clarity — translates plan features into discrete, measurable tasks",
+    "rationale": "Task decomposition requires judgment about ambiguity and measurability. Sonnet provides good reasoning at moderate cost."
+  },
+  "planer": {
+    "model": "claude-sonnet-4-6",
+    "description": "Structured planning — maintains PLAN.md, ensures feature coherence",
+    "rationale": "Planning requires multi-step reasoning about dependencies and gaps. Sonnet is appropriate."
+  },
+  "prompter": {
+    "model": "claude-sonnet-4-6",
+    "description": "Prompt engineering — optimizes prompts for accuracy, concision, and caching",
+    "rationale": "Prompter must understand how LLMs process text at a meta level. Sonnet has sufficient capability for this."
+  },
+  "deployer": {
+    "model": "claude-sonnet-4-6",
+    "description": "DevOps and deployment — scripts, CI/CD, infrastructure operations",
+    "rationale": "Deployer handles technical but well-defined work. Sonnet is appropriate."
+  },
+  "tester": {
+    "model": "claude-sonnet-4-6",
+    "description": "Test authorship — writes unit, integration, and functionality tests",
+    "rationale": "Good test coverage requires judgment about edge cases. Sonnet provides this at reasonable cost."
+  },
+  "reviewer": {
+    "model": "claude-opus-4-6",
+    "description": "Deep code review — analyzes code quality, security, consistency, and correctness",
+    "rationale": "Code review has high consequence. Subtle security flaws and architectural problems require the best available reasoning. Opus is justified here."
+  },
+  "architecter": {
+    "model": "claude-opus-4-6",
+    "description": "System design — infrastructure decisions, technology choices, communication patterns",
+    "rationale": "Architectural decisions are hard to reverse and have long-term consequences. Opus provides the best judgment for high-stakes decisions."
+  },
+  "reoriginator": {
+    "model": "claude-opus-4-6",
+    "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
+    "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."
+  }
+}

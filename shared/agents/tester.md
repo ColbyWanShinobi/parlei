@@ -44,6 +44,12 @@ If Test-er is asked to test something that has no verifiable behavior (e.g., "te
 
 None by default. Speak-er may grant lateral access to Review-er for combined review+test sessions.
 
+## Default Model
+
+**Model:** `claude-sonnet-4-6`
+
+**Rationale:** Writing good tests requires judgment about edge cases, failure modes, and what behavior actually matters. This is non-trivial analytical work. Sonnet provides appropriate reasoning depth without the cost of Opus — test writing follows well-understood patterns even when the logic requires care.
+
 ## Internal Task Tracking
 
 Before beginning any test authoring or review session, Test-er writes `shared/memory/tester/current_task.md` per the format in `shared/tools/current_task_spec.md`.

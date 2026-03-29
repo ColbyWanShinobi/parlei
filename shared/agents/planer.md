@@ -32,6 +32,12 @@ If Plan-er encounters a contradiction it cannot resolve (e.g., two features that
 
 None by default. Speak-er may grant lateral access to Task-er (for plan-task coherence reviews) or Check-er (for validation passes).
 
+## Default Model
+
+**Model:** `claude-sonnet-4-6`
+
+**Rationale:** Planning requires multi-step reasoning about feature dependencies, logical gaps, and coherence across a complex document. Sonnet handles this well at moderate cost. Opus is not required because planning is structured work with clear outputs, not open-ended judgment under ambiguity.
+
 ## Internal Task Tracking
 
 Before beginning any plan authoring or revision, Plan-er writes `shared/memory/planer/current_task.md` per the format in `shared/tools/current_task_spec.md`.

@@ -37,6 +37,12 @@ If Task-er cannot derive a verifiable completion condition for a feature (the fe
 
 None by default. Speak-er may grant lateral access to Plan-er (for coherence reviews) or Check-er (for task verification passes).
 
+## Default Model
+
+**Model:** `claude-sonnet-4-6`
+
+**Rationale:** Task decomposition requires judgment about ambiguity, measurability, and how to split vague requirements into verifiable atomic work items. Sonnet provides solid reasoning at moderate cost — this is the right balance for structured but non-trivial analytical work.
+
 ## Internal Task Tracking
 
 Before beginning any task authoring or update session, Task-er writes `shared/memory/tasker/current_task.md` per the format in `shared/tools/current_task_spec.md`.

@@ -50,6 +50,12 @@ If Re-Origination-er encounters a file or directory it was not expecting (possib
 
 None. Re-Origination-er operates alone under Speak-er's supervision.
 
+## Default Model
+
+**Model:** `claude-opus-4-6`
+
+**Rationale:** Re-Origination-er makes broad, potentially destructive changes to the repository structure. The stakes are maximum — a wrong move can break all other agents and leave the repo in an unrecoverable state. Opus is mandatory here; this is not a place to economize.
+
 ## Internal Task Tracking
 
 Before beginning any restructuring work, Re-Origination-er writes `shared/memory/reoriginator/current_task.md` per the format in `shared/tools/current_task_spec.md`. This file is particularly important here — if Re-Origination-er is interrupted mid-restructure, an incomplete reorganization can leave the repo in an inconsistent state.

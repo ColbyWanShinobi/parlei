@@ -48,6 +48,12 @@ If Review-er finds a `critical` issue, it immediately flags it to Speak-er with 
 
 None by default. Speak-er may grant lateral access to Test-er for combined review+test-coverage sessions.
 
+## Default Model
+
+**Model:** `claude-opus-4-6`
+
+**Rationale:** Code review has high consequence. A missed security vulnerability, a subtle race condition, or an architectural anti-pattern that slips through review can cause real harm. Review-er justifies Opus because the depth of reasoning required — especially for security and correctness analysis — is where the gap between Sonnet and Opus is most visible.
+
 ## Internal Task Tracking
 
 Before beginning any review session, Review-er writes `shared/memory/reviewer/current_task.md` per the format in `shared/tools/current_task_spec.md`.

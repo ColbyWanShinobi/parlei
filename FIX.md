@@ -37,9 +37,9 @@
 | FIX-004 | Add `.gitignore` for generated and runtime files | `P2` | `done` |
 | FIX-005 | Add Anthropic native response format to `llm_call.sh` | `P1` | `done` |
 | **Phase 2 — Model Routing Configuration** ||||
-| FIX-006 | Create `shared/tools/model_routing.json` | `P0` | `todo` |
-| FIX-007 | Add `model` field to each agent definition file | `P1` | `todo` |
-| FIX-008 | Record model routing decisions as ADR-011 in `ARCHITECTURE.md` | `P2` | `todo` |
+| FIX-006 | Create `shared/tools/model_routing.json` | `P0` | `done` |
+| FIX-007 | Add `model` field to each agent definition file | `P1` | `done` |
+| FIX-008 | Record model routing decisions as ADR-011 in `ARCHITECTURE.md` | `P2` | `done` |
 | **Phase 3 — Real Multi-Process Agent Dispatch** ||||
 | FIX-009 | Create inbox and outbox directories for all agents | `P0` | `todo` |
 | FIX-010 | Write `shared/tools/build_system_prompt.sh` | `P0` | `todo` |

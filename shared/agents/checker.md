@@ -41,6 +41,12 @@ If Check-er finds a task marked `done` but the corresponding artifact is missing
 
 None by default. Speak-er may grant lateral access to Plan-er or Task-er for joint coherence sessions.
 
+## Default Model
+
+**Model:** `claude-haiku-4-5-20251001`
+
+**Rationale:** Check-er does pattern matching and presence/absence verification — does the task exist, does the file exist, is the code a stub. This does not require deep reasoning, it requires speed and low cost. Haiku is appropriate.
+
 ## Internal Task Tracking
 
 Before beginning any coherence check, Check-er writes `shared/memory/checker/current_task.md` per the format in `shared/tools/current_task_spec.md`.

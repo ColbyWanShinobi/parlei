@@ -154,6 +154,26 @@ This is non-negotiable. Violations should be raised with Architect-er immediatel
 
 ---
 
+### ADR-011 — Per-agent model routing
+
+**Decision:** Each agent is assigned a default model in `shared/tools/model_routing.json`, read at dispatch time by `shared/tools/agent_runner.sh`. The assignment follows a three-tier structure:
+
+| Tier | Model | Agents |
+|---|---|---|
+| Lightweight | `claude-haiku-4-5-20251001` | Speak-er, Check-er |
+| Balanced | `claude-sonnet-4-6` | Plan-er, Task-er, Prompt-er, Deploy-er, Test-er |
+| High-capability | `claude-opus-4-6` | Review-er, Architect-er, Re-Origination-er |
+
+**Why:** Not all agent tasks require the same reasoning depth. Speak-er handles routing and communication — fast and cheap is correct. Check-er does presence/absence verification — pattern matching, not reasoning. Sonnet agents handle structured analytical work with clear outputs. Opus agents handle high-consequence work where a wrong answer has long-term or irreversible impact: code security review, infrastructure decisions, and destructive restructuring. Using the cheapest model sufficient for each task reduces cost without reducing quality where quality matters.
+
+**Alternatives considered:**
+- Single model for all agents: Rejected. Over-spends on simple routing tasks; under-allocates capability for security review and architecture decisions where model quality is measurably consequential.
+- User-chosen model for all at runtime: Rejected. Provides no cost control, leaves model selection as an uninformed burden on the user, and makes system behavior non-deterministic across sessions.
+- Dynamic model selection per-task based on complexity estimation: Considered for v2. Adds significant complexity with uncertain benefit. Static per-agent routing is the correct starting point — change it when profiling shows it is wrong.
+- Separate routing config per environment: Rejected for v1. One routing table covers all environments. If an environment lacks a model (e.g., Codex does not offer `claude-opus-4-6`), `agent_runner.sh` falls back to `llm_call.sh` with the configured endpoint.
+
+---
+
 ## 🔮 Future Architecture Considerations
 
 | Topic | Current Decision | Potential v2 Change |

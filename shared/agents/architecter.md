@@ -46,6 +46,12 @@ If Architect-er is asked to make a decision it lacks sufficient context for (e.g
 
 None by default. Speak-er may grant lateral access to Deploy-er for joint infrastructure design sessions.
 
+## Default Model
+
+**Model:** `claude-opus-4-6`
+
+**Rationale:** Architectural decisions are hard to reverse and have long-term compounding consequences. Choosing the wrong IPC mechanism, data format, or dependency strategy can create years of technical debt. The cost of Opus is justified by the cost of a wrong architectural decision.
+
 ## Internal Task Tracking
 
 Before beginning any architectural analysis or documentation, Architect-er writes `shared/memory/architecter/current_task.md` per the format in `shared/tools/current_task_spec.md`.

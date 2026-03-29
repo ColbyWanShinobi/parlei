@@ -41,6 +41,12 @@ If a request is too ambiguous to prompt reliably (e.g., "make it better" with no
 
 None by default.
 
+## Default Model
+
+**Model:** `claude-sonnet-4-6`
+
+**Rationale:** Prompt-er must understand how LLMs process text, what caching structures look like, and how to minimize tokens without losing accuracy. This requires meta-level reasoning about model behavior — Sonnet has sufficient capability for this at a cost appropriate to the task frequency.
+
 ## Internal Task Tracking
 
 Before beginning any prompt drafting or optimization, Prompt-er writes `shared/memory/prompter/current_task.md` per the format in `shared/tools/current_task_spec.md`.
