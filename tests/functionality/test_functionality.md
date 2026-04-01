@@ -54,7 +54,7 @@ Check-er's response must include evidence (file references), not just an asserti
 
 ---
 
-## FT-103 — All 10 agents respond to identity query
+## FT-103 — All 11 agents respond to identity query
 
 **Steps:**
 For each agent in the roster, send Speak-er: "Please have [Agent Name] introduce themselves."
@@ -73,10 +73,10 @@ For each agent in the roster, send Speak-er: "Please have [Agent Name] introduce
 **Steps:**
 1. Run `scripts/setup.sh claude`. Open Claude Code. Send: "What agents are available to you?"
 2. Note the full response.
-3. Run `scripts/setup.sh augment`. Open Augment. Send the identical question.
+3. Run `scripts/setup.sh codex`. Open Codex. Send the identical question.
 4. Note the full response.
 
-**Pass condition:** Both responses list the same 10 agents. Both responses demonstrate awareness of the same `shared/` memory and personality files. Any differences are limited to the environment-specific bootstrap text in the config files.
+**Pass condition:** Both responses list the same 11 agents. Both responses demonstrate awareness of the same `shared/` memory and personality files. Any differences are limited to the environment-specific bootstrap text in the config files.
 
 **Fail condition:** One environment lists different agents, shows different memory, or behaves differently on an identical prompt.
 

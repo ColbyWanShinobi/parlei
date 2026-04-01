@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # setup.sh — Bootstrap Parlei for a given AI coding environment.
 # Usage: setup.sh <environment>
-# Environments: claude | augment | codex | openclaw
+# Environments: claude | codex | openclaw
 
 set -euo pipefail
 
@@ -10,13 +10,13 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SHARED_DIR="$REPO_ROOT/shared"
 BACKUPS_DIR="$REPO_ROOT/backups"
 
-VALID_ENVS=("claude" "augment" "codex" "openclaw")
+VALID_ENVS=("claude" "codex" "openclaw")
 
 # ── Argument parsing & validation ────────────────────────────────────────────
 
 usage() {
   echo "Usage: $0 <environment>"
-  echo "  Environments: claude | augment | codex | openclaw"
+  echo "  Environments: claude | codex | openclaw"
   exit 1
 }
 
@@ -40,7 +40,6 @@ fi
 
 case "$ENV" in
   claude)   CONFIG_FILE="$REPO_ROOT/CLAUDE.md" ;;
-  augment)  CONFIG_FILE="$REPO_ROOT/bootstraps/AUGGIE.md" ;;
   codex)    CONFIG_FILE="$REPO_ROOT/bootstraps/CODEX.md" ;;
   openclaw) CONFIG_FILE="$REPO_ROOT/bootstraps/OPENCLAW.md" ;;
 esac

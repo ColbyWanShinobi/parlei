@@ -97,7 +97,7 @@ case "$ENV" in
       exit 1
     }
     ;;
-  codex|augment|*)
+  codex|*)
     # No interactive CLI with a --print equivalent. Fall back to llm_call.sh
     # using the endpoint configured in memory_config.json.
     CONFIG_FILE="$SCRIPT_DIR/memory_config.json"

@@ -118,7 +118,7 @@ This is non-negotiable. Violations should be raised with Architect-er immediatel
 
 ### ADR-008 — Cross-environment parity via symlinks
 
-**Decision:** All environment config files (`CLAUDE.md` at repo root, `bootstraps/AUGGIE.md`, `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`) contain only environment-specific bootstrap instructions. All shared content lives in `shared/` and is referenced by path.
+**Decision:** All environment config files (`CLAUDE.md` at repo root, `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`) contain only environment-specific bootstrap instructions. All shared content lives in `shared/` and is referenced by path.
 
 **Why:** Symlinks (and direct path references) ensure that agent definitions, memory, and personalities are never duplicated. A change to `shared/agents/speaker.md` is instantly reflected in all four environments.
 

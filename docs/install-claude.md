@@ -6,7 +6,7 @@
 
 ## 📍 Where to Install
 
-Parlei should be installed **once per machine** in a location accessible by every AI tool you intend to use. All bootstrap configs (`CLAUDE.md`, `bootstraps/AUGGIE.md`, etc.) point into the same `shared/` directory. Two separate Parlei installs means split agent memory — avoid it.
+Parlei should be installed **once per machine** in a location accessible by every AI tool you intend to use. All bootstrap configs (`CLAUDE.md`, `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`) point into the same `shared/` directory. Two separate Parlei installs means split agent memory — avoid it.
 
 ### macOS
 
@@ -42,7 +42,6 @@ If you must install on native Windows:
 ```
 
 - Claude Code (Windows app) will load `CLAUDE.md` from the Windows filesystem.
-- Augment works via VS Code on Windows.
 - All scripts must be run from **Git Bash** — the Windows Command Prompt and PowerShell will not work.
 - Replace cron with **Windows Task Scheduler**: create two tasks that run `bash.exe scripts/memory_optimize.sh` and `bash.exe scripts/backup.sh` at 02:00 and 02:30 respectively, using the absolute Windows path to `bash.exe` (typically `C:\Program Files\Git\bin\bash.exe`).
 
@@ -64,8 +63,8 @@ File I/O on `/mnt/c/` paths is significantly slower inside WSL2, `inotify` (used
 
 | Tool | How to access WSL2 files |
 |---|---|
-| VS Code + Augment | Install the **WSL** extension → `Remote: Reopen Folder in WSL` → open `~/parlei` |
 | Claude Code (Windows app) | Open via the WSL network path: `\\wsl$\<distro>\home\<user>\parlei` |
+| VS Code | Install the **WSL** extension → `Remote: Reopen Folder in WSL` → open `~/parlei` |
 | Windows Explorer | Navigate to `\\wsl$\<distro>\home\<user>\parlei` |
 | Any Windows app | Use the `\\wsl$\` UNC path above |
 
@@ -413,7 +412,7 @@ If the file exists but the status field is missing or malformed, Speak-er will n
 
 ### `.parlei-env` shows wrong environment
 
-**Symptom:** `.parlei-env` contains `augment` but you are using Claude Code.
+**Symptom:** `.parlei-env` contains `codex` but you are using Claude Code.
 
 **Fix:**
 ```bash

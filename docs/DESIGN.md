@@ -24,7 +24,6 @@ Parlei is designed to run in the following AI coding environments:
 | Environment | Config File                  |
 |-------------|------------------------------|
 | Claude Code | `CLAUDE.md`                  |
-| Augment     | `bootstraps/AUGGIE.md`       |
 | Codex       | `bootstraps/CODEX.md`        |
 | OpenClaw    | `bootstraps/OPENCLAW.md`     |
 
@@ -36,7 +35,6 @@ Each environment config file contains **only** environment-specific setup instru
 parlei/
 ├── CLAUDE.md            # Claude Code bootstrap (must be at root for Claude Code to load)
 ├── bootstraps/
-│   ├── AUGGIE.md        # Augment-specific bootstrap
 │   ├── CODEX.md         # Codex-specific bootstrap
 │   └── OPENCLAW.md      # OpenClaw-specific bootstrap
 ├── docs/
@@ -46,7 +44,6 @@ parlei/
 │   ├── REORIGINATION.md     # Log of restructuring actions
 │   ├── TASKS.md             # Concrete, trackable task list
 │   ├── install-claude.md    # Install, uninstall & troubleshooting — Claude Code
-│   ├── install-augment.md   # Install, uninstall & troubleshooting — Augment
 │   ├── install-codex.md     # Install, uninstall & troubleshooting — Codex
 │   └── install-openclaw.md  # Install, uninstall & troubleshooting — OpenClaw
 ├── shared/
@@ -400,7 +397,6 @@ All technology choices should trend toward **open source solutions** unless a pr
 | `docs/REORIGINATION.md` | Re-Origination-er | Log of restructuring actions |
 | `docs/DESIGN.md` | — | This document — system design reference |
 | `docs/install-claude.md` | — | Install, uninstall & troubleshooting for Claude Code |
-| `docs/install-augment.md` | — | Install, uninstall & troubleshooting for Augment |
 | `docs/install-codex.md` | — | Install, uninstall & troubleshooting for Codex |
 | `docs/install-openclaw.md` | — | Install, uninstall & troubleshooting for OpenClaw |
 | `shared/memory/` | All agents | Persistent per-agent memory |

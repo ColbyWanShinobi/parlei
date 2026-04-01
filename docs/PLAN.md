@@ -10,7 +10,7 @@
 A plan must have at least one clear, measurable goal. Parlei has three, in priority order:
 
 ### Goal 1 — Cross-Environment Parity ✅
-> A user can install Parlei into any supported AI coding environment (Claude Code, Augment, Codex, OpenClaw) and get an **identical agent experience** — same agents, same memory, same personalities, same behavior — with zero manual duplication of files.
+> A user can install Parlei into any supported AI coding environment (Claude Code, Codex, OpenClaw) and get an **identical agent experience** — same agents, same memory, same personalities, same behavior — with zero manual duplication of files.
 
 **Measured by:** Running the setup script for two different environments and confirming via checksum that all shared agent, memory, and personality files resolve to the same inodes (or identical content via symlink).
 
@@ -43,7 +43,7 @@ The following sections break Parlei into its major functional areas. Each area l
 **Features:**
 
 #### 1.1 — Setup Script (`scripts/setup.sh`)
-- Accepts a single argument: the target environment (`claude`, `augment`, `codex`, `openclaw`).
+- Accepts a single argument: the target environment (`claude`, `codex`, `openclaw`).
 - Creates all required symlinks from environment-specific config files into `shared/`.
 - Creates the `backups/` directory if it does not exist.
 - Registers the nightly cron jobs for memory optimization and backup.
@@ -51,7 +51,7 @@ The following sections break Parlei into its major functional areas. Each area l
 - Is idempotent — safe to run multiple times without creating duplicate cron entries or broken symlinks.
 
 #### 1.2 — Environment Config Files
-- One `.md` file per supported environment: `CLAUDE.md` (repo root), `bootstraps/AUGGIE.md`, `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`.
+- One `.md` file per supported environment: `CLAUDE.md` (repo root), `bootstraps/CODEX.md`, `bootstraps/OPENCLAW.md`.
 - Each file contains **only** environment-specific bootstrap instructions and loading directives — no agent logic, no memory, no personalities.
 - Each file instructs the host tool to load Speak-er as the entry point.
 
@@ -356,13 +356,13 @@ These are end-to-end scenarios that validate the system behaves correctly as a w
 | Plan → Tasks coherence | Plan-er produces PLAN.md; Task-er produces TASKS.md; Check-er confirms every plan feature has a task |
 | 48-hour autonomous operation | After setup, no human intervention: backups present, memory optimized, no silent failures |
 | Agent roster completeness | All 10 agents respond to a "who are you" query with their defined identity and role |
-| Environment switch | User switches from Claude Code to Augment; agent behavior, memory, and personalities are identical |
+| Environment switch | User switches from Claude Code to Codex; agent behavior, memory, and personalities are identical |
 | Escalation visible to human | A deliberately broken agent response triggers the full retry + escalation chain and produces a human-readable notification |
 
 ### What We Are Not Testing
 
 - LLM response quality (non-deterministic; out of scope for automated tests).
-- Proprietary AI tool internals (Claude, Augment, etc.).
+- Proprietary AI tool internals (Claude, Codex, OpenClaw, etc.).
 - Operating system cron behavior beyond correct entry registration.
 
 ---
