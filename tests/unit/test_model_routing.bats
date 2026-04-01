@@ -196,15 +196,15 @@ print('ok')
   [ "$output" = "ok" ]
 }
 
-@test "model_routing: codex lightweight tier uses gpt-5.4-mini" {
+@test "model_routing: codex lightweight tier uses gpt-5.1-codex-mini" {
   run python3 -c "
 import json, sys
 d = json.load(open('$ROUTING'))
 lightweight_agents = ['speaker', 'checker']
 for agent in lightweight_agents:
     model = d[agent].get('codex', '')
-    if model != 'gpt-5.4-mini':
-        print(f'{agent} codex model expected gpt-5.4-mini, got: {model}')
+    if model != 'gpt-5.1-codex-mini':
+        print(f'{agent} codex model expected gpt-5.1-codex-mini, got: {model}')
         sys.exit(1)
 print('ok')
 "
@@ -228,15 +228,15 @@ print('ok')
   [ "$output" = "ok" ]
 }
 
-@test "model_routing: codex premium tier uses gpt-5.3-codex" {
+@test "model_routing: codex premium tier uses gpt-5.1-codex-max" {
   run python3 -c "
 import json, sys
 d = json.load(open('$ROUTING'))
 premium_agents = ['reviewer', 'architecter', 'reoriginator']
 for agent in premium_agents:
     model = d[agent].get('codex', '')
-    if model != 'gpt-5.3-codex':
-        print(f'{agent} codex model expected gpt-5.3-codex, got: {model}')
+    if model != 'gpt-5.1-codex-max':
+        print(f'{agent} codex model expected gpt-5.1-codex-max, got: {model}')
         sys.exit(1)
 print('ok')
 "

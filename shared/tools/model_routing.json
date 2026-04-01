@@ -7,9 +7,9 @@
       "premium": "claude-opus-4-6"
     },
     "codex": {
-      "lightweight": "gpt-5.4-mini",
+      "lightweight": "gpt-5.1-codex-mini",
       "balanced": "gpt-5.4",
-      "premium": "gpt-5.3-codex"
+      "premium": "gpt-5.1-codex-max"
     },
     "openclaw": {
       "lightweight": "claude-haiku-4-5-20251001",
@@ -17,10 +17,18 @@
       "premium": "claude-opus-4-6"
     }
   },
+  "_pricing_notes": {
+    "claude_lightweight": "$0.25/$1.25 per M tokens",
+    "claude_balanced": "$3.00/$15.00 per M tokens",
+    "claude_premium": "$15.00/$75.00 per M tokens",
+    "codex_lightweight": "$0.25/$2.00 per M tokens (gpt-5.1-codex-mini)",
+    "codex_balanced": "$2.50/$15.00 per M tokens (gpt-5.4)",
+    "codex_premium": "$1.25/$10.00 per M tokens (gpt-5.1-codex-max)"
+  },
   "speaker": {
     "tier": "lightweight",
     "claude": "claude-haiku-4-5-20251001",
-    "codex": "gpt-5.4-mini",
+    "codex": "gpt-5.1-codex-mini",
     "openclaw": "claude-haiku-4-5-20251001",
     "description": "Lightweight orchestrator — routes tasks, synthesizes results, communicates with the Spirit",
     "rationale": "Speak-er's job is routing, coordination, and communication. Deep reasoning is not required. Fast, low-cost models provide appropriate performance for an orchestrator that handles every message."
@@ -28,7 +36,7 @@
   "checker": {
     "tier": "lightweight",
     "claude": "claude-haiku-4-5-20251001",
-    "codex": "gpt-5.4-mini",
+    "codex": "gpt-5.1-codex-mini",
     "openclaw": "claude-haiku-4-5-20251001",
     "description": "Mechanical verification — confirms tasks have corresponding implementations",
     "rationale": "Check-er does pattern matching and presence/absence verification. It does not need to reason deeply — it needs to be fast and cheap."
@@ -84,7 +92,7 @@
   "reviewer": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.3-codex",
+    "codex": "gpt-5.1-codex-max",
     "openclaw": "claude-opus-4-6",
     "description": "Deep code review — analyzes code quality, security, consistency, and correctness",
     "rationale": "Code review has high consequence. Subtle security flaws and architectural problems require the best available reasoning. Premium models are justified here."
@@ -92,7 +100,7 @@
   "architecter": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.3-codex",
+    "codex": "gpt-5.1-codex-max",
     "openclaw": "claude-opus-4-6",
     "description": "System design — infrastructure decisions, technology choices, communication patterns",
     "rationale": "Architectural decisions are hard to reverse and have long-term consequences. Premium models provide the best judgment for high-stakes decisions."
@@ -100,7 +108,7 @@
   "reoriginator": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.3-codex",
+    "codex": "gpt-5.1-codex-max",
     "openclaw": "claude-opus-4-6",
     "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
     "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."

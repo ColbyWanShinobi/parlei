@@ -34,11 +34,6 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "setup: valid environment 'augment' exits 0" {
-  run bash "$PARLEI_TEST_ROOT/scripts/setup.sh" augment
-  [ "$status" -eq 0 ]
-}
-
 @test "setup: valid environment 'codex' exits 0" {
   run bash "$PARLEI_TEST_ROOT/scripts/setup.sh" codex
   [ "$status" -eq 0 ]

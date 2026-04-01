@@ -142,11 +142,11 @@ Review-er  Architect-er
 
 **Model tiers adapt to your environment:**
 
-| Tier | Claude Code | Codex | OpenClaw |
-|------|-------------|-------|----------|
-| **Lightweight** (routing) | Haiku 4.5 | GPT-5.4-mini | Haiku 4.5 |
-| **Balanced** (general work) | Sonnet 4.6 | GPT-5.4 | Sonnet 4.6 |
-| **Premium** (high-stakes) | Opus 4.6 | GPT-5.3-Codex | Opus 4.6 |
+| Tier | Claude Code | Codex | OpenClaw | Codex Pricing |
+|------|-------------|-------|----------|---------------|
+| **Lightweight** (routing) | Haiku 4.5 | GPT-5.1-Codex-Mini | Haiku 4.5 | $0.25/$2.00/M |
+| **Balanced** (general work) | Sonnet 4.6 | GPT-5.4 | Sonnet 4.6 | $2.50/$15.00/M |
+| **Premium** (high-stakes) | Opus 4.6 | GPT-5.1-Codex-Max | Opus 4.6 | $1.25/$10.00/M |
 
 - **Speak-er & Check-er** use lightweight models for fast routing and verification
 - **Most agents** use balanced models for coding, planning, and testing

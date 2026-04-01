@@ -206,15 +206,25 @@ To specify a model, set `llm_model` in `shared/tools/memory_config.json`:
 
 If `llm_model` is empty, the `codex` CLI uses its own default model. No auth token is stored in Parlei — the Codex CLI handles authentication via its own config (typically `~/.codex/config.json` or environment variables set at login).
 
-**Model Tier Strategy for Codex:**
+**Model Tier Strategy for Codex (Cost-Optimized):**
 
-Parlei uses a three-tier model strategy optimized for cost and capability:
+Parlei uses a three-tier model strategy optimized for maximum cost efficiency:
 
-- **Lightweight** (`gpt-5.4-mini`): Fast routing and mechanical verification (Speak-er, Check-er)
-- **Balanced** (`gpt-5.4`): General coding, planning, testing (Plan-er, Task-er, Code-er, Test-er, etc.)
-- **Premium** (`gpt-5.3-codex`): High-stakes work requiring deep expertise (Review-er, Architect-er, Re-Origination-er)
+- **Lightweight** (`gpt-5.1-codex-mini`): $0.25/$2.00 per M tokens — Fast routing and mechanical verification (Speak-er, Check-er)
+  - *Matches Claude Haiku pricing exactly*
+- **Balanced** (`gpt-5.4`): $2.50/$15.00 per M tokens — General coding, planning, testing (Plan-er, Task-er, Code-er, Test-er, etc.)
+  - *17% cheaper than Claude Sonnet on input tokens*
+- **Premium** (`gpt-5.1-codex-max`): $1.25/$10.00 per M tokens — High-stakes work requiring deep expertise (Review-er, Architect-er, Re-Origination-er)
+  - *92% cheaper than Claude Opus!*
 
 This mapping is defined in `shared/tools/model_routing.json` and automatically applied when running in Codex mode.
+
+**Cost Comparison:**
+| Tier | Claude Cost | Codex Cost | Savings |
+|------|-------------|------------|---------|
+| Lightweight | $0.25/$1.25 | $0.25/$2.00 | Similar |
+| Balanced | $3.00/$15.00 | $2.50/$15.00 | 17% cheaper input |
+| Premium | $15.00/$75.00 | $1.25/$10.00 | 92% cheaper input, 87% cheaper output |
 
 ---
 

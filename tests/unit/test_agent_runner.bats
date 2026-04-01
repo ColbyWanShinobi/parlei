@@ -166,24 +166,41 @@ OPENCLAW_EOF
   rm -f "$PARLEI_TEST_ROOT/.parlei-env" "$STUB_BIN/openclaw_model" "$STUB_BIN/openclaw"
 }
 
-@test "agent_runner: codex environment uses llm_call.sh fallback" {
-  cat > "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh" <<'LLM_EOF'
+@test "agent_runner: codex environment uses codex exec CLI" {
+  # Create stub codex CLI that records the model it was called with
+  STUB_BIN="$PARLEI_TEST_ROOT/stub_bin"
+  mkdir -p "$STUB_BIN"
+  cat > "$STUB_BIN/codex" <<'CODEX_EOF'
 #!/usr/bin/env bash
-echo "$2" > "$PARLEI_TEST_ROOT/shared/tools/last_llm_call_model"
+# Record which model was passed via --model flag
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --model)
+      echo "$2" > "$PARLEI_TEST_ROOT/codex_model_called"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+# Return valid JSON response
 cat > /dev/null
-echo '{"from":"speaker","to":"tasker","request_id":"req-speaker-20260329-001","items":[{"id":1,"status":"confirmed","notes":"llm_call stub"}]}'
-LLM_EOF
-  chmod +x "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh"
+echo '{"from":"speaker","to":"tasker","request_id":"req-speaker-20260329-001","items":[{"id":1,"status":"confirmed","notes":"codex exec stub"}]}'
+CODEX_EOF
+  chmod +x "$STUB_BIN/codex"
 
+  # Put stub bin at front of PATH
+  export PATH="$STUB_BIN:$PATH"
   echo "codex" > "$PARLEI_TEST_ROOT/.parlei-env"
 
   run bash "$PARLEI_TEST_ROOT/shared/tools/agent_runner.sh" speaker "$PARLEI_TEST_ROOT/request.json"
   [ "$status" -eq 0 ]
-  [[ "$(cat "$PARLEI_TEST_ROOT/shared/tools/last_llm_call_model")" == *"haiku"* ]]
+  # Speaker should use gpt-5.1-codex-mini in codex environment
+  [[ "$(cat "$PARLEI_TEST_ROOT/codex_model_called")" == "gpt-5.1-codex-mini" ]]
 
-  rm -f "$PARLEI_TEST_ROOT/.parlei-env" "$PARLEI_TEST_ROOT/shared/tools/last_llm_call_model"
-  cp "$REPO_ROOT/shared/tools/llm_call.sh" "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh"
-  chmod +x "$PARLEI_TEST_ROOT/shared/tools/llm_call.sh"
+  rm -f "$PARLEI_TEST_ROOT/.parlei-env" "$PARLEI_TEST_ROOT/codex_model_called"
+  rm -rf "$STUB_BIN"
 }
 
 # ── Error handling ────────────────────────────────────────────────────────────

@@ -32,18 +32,18 @@ The following specialists are available. You do not read their files — you dis
 | Plan-er | `shared/agents/planer.md` | `gpt-5.4` |
 | Task-er | `shared/agents/tasker.md` | `gpt-5.4` |
 | Prompt-er | `shared/agents/prompter.md` | `gpt-5.4` |
-| Check-er | `shared/agents/checker.md` | `gpt-5.4-mini` |
-| Review-er | `shared/agents/reviewer.md` | `gpt-5.3-codex` |
-| Architect-er | `shared/agents/architecter.md` | `gpt-5.3-codex` |
+| Check-er | `shared/agents/checker.md` | `gpt-5.1-codex-mini` |
+| Review-er | `shared/agents/reviewer.md` | `gpt-5.1-codex-max` |
+| Architect-er | `shared/agents/architecter.md` | `gpt-5.1-codex-max` |
 | Deploy-er | `shared/agents/deployer.md` | `gpt-5.4` |
 | Test-er | `shared/agents/tester.md` | `gpt-5.4` |
-| Re-Origination-er | `shared/agents/reoriginator.md` | `gpt-5.3-codex` |
+| Re-Origination-er | `shared/agents/reoriginator.md` | `gpt-5.1-codex-max` |
 | Code-er | `shared/agents/coder.md` | `gpt-5.4` |
 
-**Model Tier Mapping:**
-- **Lightweight** (fast routing): `gpt-5.4-mini` — Fast, efficient model for orchestration and verification
-- **Balanced** (general work): `gpt-5.4` — Flagship model combining strong coding, reasoning, and agentic workflows
-- **Premium** (high-stakes): `gpt-5.3-codex` — Industry-leading coding model for complex software engineering
+**Model Tier Mapping (Cost-Optimized):**
+- **Lightweight** (fast routing): `gpt-5.1-codex-mini` ($0.25/$2.00 per M tokens) — Matches Haiku pricing, optimized for fast orchestration
+- **Balanced** (general work): `gpt-5.4` ($2.50/$15.00 per M tokens) — Flagship agentic model, 17% cheaper than Sonnet on input
+- **Premium** (high-stakes): `gpt-5.1-codex-max` ($1.25/$10.00 per M tokens) — Deep reasoning model, 92% cheaper than Opus!
 
 ## Delegation via Dispatch
 
