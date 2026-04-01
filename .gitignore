@@ -21,3 +21,4 @@ shared/memory/**/outbox/
 # Dispatch lock files (FIX-029)
 shared/memory/**/.dispatch.lock
 shared/memory/**/.dispatch.lock.d/
+shared/tmp/*

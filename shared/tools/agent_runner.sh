@@ -73,7 +73,7 @@ trap 'rm -f "$COMBINED_FILE"' EXIT
   echo ""
   echo "---"
   echo ""
-  echo "You have received the following inter-agent request. Read it carefully, perform your role as defined above, and respond with a valid JSON response envelope per the Communication Protocol. Output only the JSON — no preamble, no commentary."
+  echo "You have received the following inter-agent request. Read it carefully, perform your role as defined above, and respond with a valid JSON response envelope per the Communication Protocol. Output ONLY the raw JSON object — no preamble, no explanation, no markdown, no code fences. The very first character of your entire response must be '{' and the very last must be '}'."
   echo ""
   cat "$REQUEST_FILE"
 } > "$COMBINED_FILE"
@@ -114,15 +114,56 @@ case "$ENV" in
     ;;
 esac
 
-# ── Validate response ─────────────────────────────────────────────────────────
+# ── Extract and validate JSON from response ───────────────────────────────────
+# LLMs sometimes wrap JSON in markdown code fences even when instructed not to.
+# This extraction step tries three strategies in order:
+#   1. Parse the response as-is (ideal case — agent obeyed instructions)
+#   2. Extract from a markdown code fence: ```json ... ``` or ``` ... ```
+#   3. Extract the outermost JSON object or array from the text
+# Exits non-zero if none of the strategies yield valid JSON.
 
 if [[ -z "$RESPONSE" ]]; then
   echo "Error: LLM returned empty response for agent $AGENT (model: $MODEL)" >&2
   exit 1
 fi
 
-python3 -c "import json, sys; json.loads(sys.argv[1])" "$RESPONSE" 2>/dev/null || {
-  # Truncate raw response in error message to avoid flooding stderr
+RESPONSE="$(printf '%s' "$RESPONSE" | python3 -c "
+import json, sys, re
+
+raw = sys.stdin.read()
+
+# Strategy 1: raw response is already valid JSON
+try:
+    json.loads(raw)
+    sys.stdout.write(raw)
+    sys.exit(0)
+except json.JSONDecodeError:
+    pass
+
+# Strategy 2: JSON wrapped in a markdown code fence
+m = re.search(r'\`\`\`(?:json)?\s*\n?([\s\S]*?)\n?\`\`\`', raw)
+if m:
+    candidate = m.group(1).strip()
+    try:
+        json.loads(candidate)
+        sys.stdout.write(candidate)
+        sys.exit(0)
+    except json.JSONDecodeError:
+        pass
+
+# Strategy 3: find the outermost JSON object or array anywhere in the text
+m = re.search(r'(\{[\s\S]*\}|\[[\s\S]*\])', raw)
+if m:
+    candidate = m.group(1).strip()
+    try:
+        json.loads(candidate)
+        sys.stdout.write(candidate)
+        sys.exit(0)
+    except json.JSONDecodeError:
+        pass
+
+sys.exit(1)
+")" || {
   echo "Error: LLM response is not valid JSON for agent $AGENT. Raw (first 300 chars): ${RESPONSE:0:300}" >&2
   exit 1
 }

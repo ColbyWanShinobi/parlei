@@ -49,5 +49,10 @@
     "model": "claude-opus-4-6",
     "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
     "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."
+  },
+  "coder": {
+    "model": "claude-sonnet-4-6",
+    "description": "Principal-level implementation — writes, modifies, and refactors production-quality code",
+    "rationale": "Code writing is execution-heavy reasoning over a known spec and existing codebase. Sonnet handles large file contexts well and produces output fast enough that Speak-er is not blocked. Review-er (Opus) is the quality backstop — Code-er does not need to be the final arbiter of correctness."
   }
 }
