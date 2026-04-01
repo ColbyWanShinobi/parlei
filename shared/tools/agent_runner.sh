@@ -30,6 +30,12 @@ python3 -c "import json; json.load(open('$REQUEST_FILE'))" 2>/dev/null || {
   exit 1
 }
 
+# ── Read active environment ───────────────────────────────────────────────────
+
+ENV="claude"
+ENV_FILE="$REPO_ROOT/.parlei-env"
+[[ -f "$ENV_FILE" ]] && ENV="$(tr -d '[:space:]' < "$ENV_FILE")"
+
 # ── Read model from routing table ─────────────────────────────────────────────
 
 ROUTING_FILE="$SCRIPT_DIR/model_routing.json"
@@ -45,14 +51,18 @@ entry = d.get('$AGENT')
 if not entry:
     print('Error: agent \"$AGENT\" not found in model_routing.json', file=sys.stderr)
     sys.exit(1)
-print(entry['model'])
+
+# Try to get environment-specific model first, fall back to 'model' key
+env = '$ENV'
+model = entry.get(env)
+if not model:
+    # Fallback to legacy 'model' key for backward compatibility
+    model = entry.get('model')
+if not model:
+    print(f'Error: no model found for agent \"$AGENT\" in environment \"{env}\"', file=sys.stderr)
+    sys.exit(1)
+print(model)
 ")" || exit 1
-
-# ── Read active environment ───────────────────────────────────────────────────
-
-ENV="claude"
-ENV_FILE="$REPO_ROOT/.parlei-env"
-[[ -f "$ENV_FILE" ]] && ENV="$(tr -d '[:space:]' < "$ENV_FILE")"
 
 # ── Build system prompt ───────────────────────────────────────────────────────
 
@@ -97,20 +107,17 @@ case "$ENV" in
       exit 1
     }
     ;;
-  codex|*)
-    # No interactive CLI with a --print equivalent. Fall back to llm_call.sh
-    # using the endpoint configured in memory_config.json.
-    CONFIG_FILE="$SCRIPT_DIR/memory_config.json"
-    ENDPOINT="$(python3 -c "import json; print(json.load(open('$CONFIG_FILE')).get('llm_endpoint',''))")"
-    if [[ -z "$ENDPOINT" ]]; then
-      echo "Error: llm_endpoint not configured in memory_config.json (required for env: $ENV)" >&2
-      exit 1
-    fi
-    COMBINED_PROMPT="$(cat "$COMBINED_FILE")"
-    RESPONSE="$("$SCRIPT_DIR/llm_call.sh" "$ENDPOINT" "$MODEL" "$COMBINED_PROMPT")" || {
-      echo "Error: llm_call.sh invocation failed for agent $AGENT (env: $ENV, model: $MODEL)" >&2
+  codex)
+    # Codex CLI: Use exec mode for non-interactive invocation
+    # codex exec is inherently non-interactive and accepts stdin
+    RESPONSE="$(codex exec --model "$MODEL" --ephemeral < "$COMBINED_FILE")" || {
+      echo "Error: codex CLI invocation failed for agent $AGENT (model: $MODEL)" >&2
       exit 1
     }
+    ;;
+  *)
+    echo "Error: unknown environment '$ENV' (valid: claude, codex, openclaw)" >&2
+    exit 1
     ;;
 esac
 

@@ -131,18 +131,26 @@ Each specialist brings domain expertise. You get thoughtful, structured work ins
 ```
 Spirit of the Forest (You)
        ↕
-   Speak-er (Haiku — fast routing)
+   Speak-er (Lightweight tier — fast routing)
    ↙  ↓  ↘
 Plan-er  Task-er  Code-er  ...
-(Sonnet)  (Sonnet)  (Sonnet)
+(Balanced tier)
     ↓
 Review-er  Architect-er
-(Opus)      (Opus)
+(Premium tier)
 ```
 
-- **Speak-er** runs on Claude Haiku (fast, cheap) and routes everything
-- **Most agents** run on Claude Sonnet (balanced cost/capability)  
-- **Critical agents** run on Claude Opus (security reviews, architecture)
+**Model tiers adapt to your environment:**
+
+| Tier | Claude Code | Codex | OpenClaw |
+|------|-------------|-------|----------|
+| **Lightweight** (routing) | Haiku 4.5 | GPT-5.4-mini | Haiku 4.5 |
+| **Balanced** (general work) | Sonnet 4.6 | GPT-5.4 | Sonnet 4.6 |
+| **Premium** (high-stakes) | Opus 4.6 | GPT-5.3-Codex | Opus 4.6 |
+
+- **Speak-er & Check-er** use lightweight models for fast routing and verification
+- **Most agents** use balanced models for coding, planning, and testing
+- **Review-er, Architect-er, Re-Origination-er** use premium models for critical decisions
 
 Each agent is a **real subprocess** invoked via `dispatch.sh` with its own model and context.
 

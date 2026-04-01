@@ -1,58 +1,108 @@
 {
-  "_comment": "Model routing table. Each entry maps an agent to its default model and describes why that model was chosen. Override any entry with an environment-specific value — the dispatch script reads this file at invocation time.",
+  "_comment": "Model routing table. Each entry maps an agent to environment-specific models. The dispatch script reads this file at invocation time and selects the appropriate model based on the current environment.",
+  "_model_mapping": {
+    "claude": {
+      "lightweight": "claude-haiku-4-5-20251001",
+      "balanced": "claude-sonnet-4-6",
+      "premium": "claude-opus-4-6"
+    },
+    "codex": {
+      "lightweight": "gpt-5.4-mini",
+      "balanced": "gpt-5.4",
+      "premium": "gpt-5.3-codex"
+    },
+    "openclaw": {
+      "lightweight": "claude-haiku-4-5-20251001",
+      "balanced": "claude-sonnet-4-6",
+      "premium": "claude-opus-4-6"
+    }
+  },
   "speaker": {
-    "model": "claude-haiku-4-5-20251001",
+    "tier": "lightweight",
+    "claude": "claude-haiku-4-5-20251001",
+    "codex": "gpt-5.4-mini",
+    "openclaw": "claude-haiku-4-5-20251001",
     "description": "Lightweight orchestrator — routes tasks, synthesizes results, communicates with the Spirit",
-    "rationale": "Speak-er's job is routing, coordination, and communication. Deep reasoning is not required. Haiku provides fast, low-cost responses appropriate for an orchestrator that handles every message."
+    "rationale": "Speak-er's job is routing, coordination, and communication. Deep reasoning is not required. Fast, low-cost models provide appropriate performance for an orchestrator that handles every message."
   },
   "checker": {
-    "model": "claude-haiku-4-5-20251001",
+    "tier": "lightweight",
+    "claude": "claude-haiku-4-5-20251001",
+    "codex": "gpt-5.4-mini",
+    "openclaw": "claude-haiku-4-5-20251001",
     "description": "Mechanical verification — confirms tasks have corresponding implementations",
     "rationale": "Check-er does pattern matching and presence/absence verification. It does not need to reason deeply — it needs to be fast and cheap."
   },
   "tasker": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "Task decomposition and clarity — translates plan features into discrete, measurable tasks",
-    "rationale": "Task decomposition requires judgment about ambiguity and measurability. Sonnet provides good reasoning at moderate cost."
+    "rationale": "Task decomposition requires judgment about ambiguity and measurability. Balanced models provide good reasoning at moderate cost."
   },
   "planer": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "Structured planning — maintains PLAN.md, ensures feature coherence",
-    "rationale": "Planning requires multi-step reasoning about dependencies and gaps. Sonnet is appropriate."
+    "rationale": "Planning requires multi-step reasoning about dependencies and gaps. Balanced models are appropriate."
   },
   "prompter": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "Prompt engineering — optimizes prompts for accuracy, concision, and caching",
-    "rationale": "Prompter must understand how LLMs process text at a meta level. Sonnet has sufficient capability for this."
+    "rationale": "Prompter must understand how LLMs process text at a meta level. Balanced models have sufficient capability for this."
   },
   "deployer": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "DevOps and deployment — scripts, CI/CD, infrastructure operations",
-    "rationale": "Deployer handles technical but well-defined work. Sonnet is appropriate."
+    "rationale": "Deployer handles technical but well-defined work. Balanced models are appropriate."
   },
   "tester": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "Test authorship — writes unit, integration, and functionality tests",
-    "rationale": "Good test coverage requires judgment about edge cases. Sonnet provides this at reasonable cost."
-  },
-  "reviewer": {
-    "model": "claude-opus-4-6",
-    "description": "Deep code review — analyzes code quality, security, consistency, and correctness",
-    "rationale": "Code review has high consequence. Subtle security flaws and architectural problems require the best available reasoning. Opus is justified here."
-  },
-  "architecter": {
-    "model": "claude-opus-4-6",
-    "description": "System design — infrastructure decisions, technology choices, communication patterns",
-    "rationale": "Architectural decisions are hard to reverse and have long-term consequences. Opus provides the best judgment for high-stakes decisions."
-  },
-  "reoriginator": {
-    "model": "claude-opus-4-6",
-    "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
-    "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."
+    "rationale": "Good test coverage requires judgment about edge cases. Balanced models provide this at reasonable cost."
   },
   "coder": {
-    "model": "claude-sonnet-4-6",
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "codex": "gpt-5.4",
+    "openclaw": "claude-sonnet-4-6",
     "description": "Principal-level implementation — writes, modifies, and refactors production-quality code",
-    "rationale": "Code writing is execution-heavy reasoning over a known spec and existing codebase. Sonnet handles large file contexts well and produces output fast enough that Speak-er is not blocked. Review-er (Opus) is the quality backstop — Code-er does not need to be the final arbiter of correctness."
+    "rationale": "Code writing is execution-heavy reasoning over a known spec and existing codebase. Balanced models handle large file contexts well and produce output fast enough that Speak-er is not blocked. Review-er (premium tier) is the quality backstop — Code-er does not need to be the final arbiter of correctness."
+  },
+  "reviewer": {
+    "tier": "premium",
+    "claude": "claude-opus-4-6",
+    "codex": "gpt-5.3-codex",
+    "openclaw": "claude-opus-4-6",
+    "description": "Deep code review — analyzes code quality, security, consistency, and correctness",
+    "rationale": "Code review has high consequence. Subtle security flaws and architectural problems require the best available reasoning. Premium models are justified here."
+  },
+  "architecter": {
+    "tier": "premium",
+    "claude": "claude-opus-4-6",
+    "codex": "gpt-5.3-codex",
+    "openclaw": "claude-opus-4-6",
+    "description": "System design — infrastructure decisions, technology choices, communication patterns",
+    "rationale": "Architectural decisions are hard to reverse and have long-term consequences. Premium models provide the best judgment for high-stakes decisions."
+  },
+  "reoriginator": {
+    "tier": "premium",
+    "claude": "claude-opus-4-6",
+    "codex": "gpt-5.3-codex",
+    "openclaw": "claude-opus-4-6",
+    "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
+    "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."
   }
 }

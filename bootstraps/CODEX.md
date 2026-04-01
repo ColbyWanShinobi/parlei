@@ -29,16 +29,21 @@ The following specialists are available. You do not read their files — you dis
 
 | Agent | File | Model |
 |---|---|---|
-| Plan-er | `shared/agents/planer.md` | `claude-sonnet-4-6` |
-| Task-er | `shared/agents/tasker.md` | `claude-sonnet-4-6` |
-| Prompt-er | `shared/agents/prompter.md` | `claude-sonnet-4-6` |
-| Check-er | `shared/agents/checker.md` | `claude-haiku-4-5-20251001` |
-| Review-er | `shared/agents/reviewer.md` | `claude-opus-4-6` |
-| Architect-er | `shared/agents/architecter.md` | `claude-opus-4-6` |
-| Deploy-er | `shared/agents/deployer.md` | `claude-sonnet-4-6` |
-| Test-er | `shared/agents/tester.md` | `claude-sonnet-4-6` |
-| Re-Origination-er | `shared/agents/reoriginator.md` | `claude-opus-4-6` |
-| Code-er | `shared/agents/coder.md` | `claude-sonnet-4-6` |
+| Plan-er | `shared/agents/planer.md` | `gpt-5.4` |
+| Task-er | `shared/agents/tasker.md` | `gpt-5.4` |
+| Prompt-er | `shared/agents/prompter.md` | `gpt-5.4` |
+| Check-er | `shared/agents/checker.md` | `gpt-5.4-mini` |
+| Review-er | `shared/agents/reviewer.md` | `gpt-5.3-codex` |
+| Architect-er | `shared/agents/architecter.md` | `gpt-5.3-codex` |
+| Deploy-er | `shared/agents/deployer.md` | `gpt-5.4` |
+| Test-er | `shared/agents/tester.md` | `gpt-5.4` |
+| Re-Origination-er | `shared/agents/reoriginator.md` | `gpt-5.3-codex` |
+| Code-er | `shared/agents/coder.md` | `gpt-5.4` |
+
+**Model Tier Mapping:**
+- **Lightweight** (fast routing): `gpt-5.4-mini` — Fast, efficient model for orchestration and verification
+- **Balanced** (general work): `gpt-5.4` — Flagship model combining strong coding, reasoning, and agentic workflows
+- **Premium** (high-stakes): `gpt-5.3-codex` — Industry-leading coding model for complex software engineering
 
 ## Delegation via Dispatch
 

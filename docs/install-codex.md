@@ -196,7 +196,7 @@ To specify a model, set `llm_model` in `shared/tools/memory_config.json`:
 
 ```json
 {
-  "llm_model": "gpt-4o",
+  "llm_model": "gpt-5.4-mini",
   "episodic_retention_days": 90,
   "promotion_threshold": 3,
   "backup_retention_count": 30,
@@ -205,6 +205,16 @@ To specify a model, set `llm_model` in `shared/tools/memory_config.json`:
 ```
 
 If `llm_model` is empty, the `codex` CLI uses its own default model. No auth token is stored in Parlei — the Codex CLI handles authentication via its own config (typically `~/.codex/config.json` or environment variables set at login).
+
+**Model Tier Strategy for Codex:**
+
+Parlei uses a three-tier model strategy optimized for cost and capability:
+
+- **Lightweight** (`gpt-5.4-mini`): Fast routing and mechanical verification (Speak-er, Check-er)
+- **Balanced** (`gpt-5.4`): General coding, planning, testing (Plan-er, Task-er, Code-er, Test-er, etc.)
+- **Premium** (`gpt-5.3-codex`): High-stakes work requiring deep expertise (Review-er, Architect-er, Re-Origination-er)
+
+This mapping is defined in `shared/tools/model_routing.json` and automatically applied when running in Codex mode.
 
 ---
 
