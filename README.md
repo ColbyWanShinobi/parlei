@@ -11,12 +11,14 @@ Parlei (from "parley" — a conference or discussion) is a multi-agent AI system
 Parlei transforms your AI coding environment into a coordinated team of specialists:
 
 - **Plan-er** maintains the project vision and ensures feature coherence
-- **Task-er** breaks plans into discrete, measurable tasks  
+- **Task-er** breaks plans into discrete, measurable tasks
 - **Code-er** implements features at a principal engineer level
 - **Review-er** performs deep security and quality reviews (uses the most capable model)
 - **Test-er** writes comprehensive, clean test coverage
 - **Architect-er** makes infrastructure and technology decisions
 - **Deploy-er** handles DevOps and deployment operations
+- **Tech-Write-er** creates API docs, architecture documentation, and technical references
+- **Prose-Write-er** writes marketing content, blog posts, and user-facing documentation
 - **Check-er** verifies plan-task-code coherence
 - **Prompt-er** optimizes prompts for efficiency and caching
 - **Re-Origination-er** restructures codebases for major versions
@@ -33,21 +35,26 @@ Each agent runs as an **isolated subprocess with its own model**, persistent mem
 - No shared conversation history between agents
 - Clean isolation ensures focused, expert outputs
 
-### 💰 **Cost-Optimized Model Routing**
+### 💰 **Cost-Optimized Model Routing** (Claude Code only)
 - Lightweight tasks use fast, cheap models (Haiku for routing)
 - Complex work uses balanced models (Sonnet for implementation)
 - High-stakes reviews use premium models (Opus for security)
 - **Saves money** without sacrificing quality where it matters
+- *Note: Codex and OpenClaw use persona-switching with a single model (no tier optimization)*
 
 ### 🧠 **Persistent Memory**
 - Each agent maintains long-term memory of decisions and patterns
 - Memory automatically optimizes and compresses nightly
 - Survives across sessions and environment switches
 
-### 🌍 **Cross-Environment Parity**
-- Works in Claude Code, Codex, and OpenClaw
-- Same agents, same behavior, same memory everywhere
-- Switch environments seamlessly with zero reconfiguration
+### 🌍 **Multi-Environment Support**
+- **Use Claude and Codex simultaneously** on the same system!
+- Auto-detects which AI CLI is available at runtime
+- Same agents, same behavior, same memory across all environments
+- No configuration needed - just install the CLI tools you want
+- **Architecture differences**:
+  - **Claude Code**: Subprocess delegation with true model-tier optimization
+  - **Codex/OpenClaw**: Persona-switching with single model (faster, no cost optimization)
 
 ### 🔄 **Automated Maintenance**
 - Nightly memory optimization removes duplicates and cruft
@@ -81,15 +88,32 @@ Each agent runs as an **isolated subprocess with its own model**, persistent mem
 git clone <parlei-repo-url> parlei
 cd parlei
 
-# Run setup for your environment
-bash scripts/setup.sh claude    # or: codex, openclaw
+# Install the global CLI (optional but recommended)
+bash scripts/install_global.sh
+
+# Run setup (enables ALL environments by default)
+parlei setup          # Auto-detects Claude, Codex, OpenClaw
 
 # Open your AI coding tool and load the bootstrap file
 # For Claude Code: CLAUDE.md (auto-loaded from repo root)
+# For Codex: codex "Read bootstraps/CODEX.md and follow all instructions"
 # For others: See docs/install-<environment>.md
 ```
 
 **That's it.** The parliament is in session. 🦉
+
+### Global CLI Commands
+
+Once installed globally, you can use `parlei` from anywhere:
+
+```bash
+parlei status           # Show current configuration
+parlei setup codex      # Set up environment
+parlei test unit        # Run unit tests
+parlei backup           # Create memory backup
+parlei optimize         # Optimize agent memory
+parlei help             # Show all commands
+```
 
 ---
 
@@ -149,8 +173,8 @@ Review-er  Architect-er
 | **Premium** (high-stakes) | Opus 4.6 | GPT-5.1-Codex-Max | Opus 4.6 | $1.25/$10.00/M |
 
 - **Speak-er & Check-er** use lightweight models for fast routing and verification
-- **Most agents** use balanced models for coding, planning, and testing
-- **Review-er, Architect-er, Re-Origination-er** use premium models for critical decisions
+- **Most agents** use balanced models for coding, planning, testing, and technical documentation
+- **Review-er, Architect-er, Re-Origination-er, Prose-Write-er** use premium models for critical decisions and high-quality prose
 
 Each agent is a **real subprocess** invoked via `dispatch.sh` with its own model and context.
 
@@ -218,6 +242,29 @@ parlei/
 
 ## 🛠️ Commands
 
+### Global CLI (Recommended)
+
+```bash
+# Setup and configuration
+parlei setup codex                # Set up for Codex environment
+parlei status                     # Show current configuration
+parlei bootstrap codex            # Display bootstrap instructions
+
+# Testing
+parlei test                       # Run all tests
+parlei test unit                  # Run unit tests only
+
+# Maintenance
+parlei backup                     # Create memory backup
+parlei restore 2026-04-01         # Restore from backup
+parlei optimize                   # Optimize agent memory
+
+# Help
+parlei help                       # Show all commands
+```
+
+### Direct Script Access (Alternative)
+
 ```bash
 # Setup for an environment
 bash scripts/setup.sh claude
@@ -233,6 +280,10 @@ bash scripts/restore.sh backups/parlei-backup-20260401-0230.tar.gz
 
 # Check cron jobs are registered
 crontab -l | grep parlei
+
+# Install/uninstall global CLI
+bash scripts/install_global.sh    # Install
+bash scripts/uninstall_global.sh  # Uninstall
 ```
 
 ---

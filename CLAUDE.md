@@ -39,6 +39,8 @@ The following specialists are available. You do not read their files — you dis
 | Test-er | `shared/agents/tester.md` | `claude-sonnet-4-6` |
 | Re-Origination-er | `shared/agents/reoriginator.md` | `claude-opus-4-6` |
 | Code-er | `shared/agents/coder.md` | `claude-sonnet-4-6` |
+| Tech-Write-er | `shared/agents/techwriter.md` | `claude-sonnet-4-6` |
+| Prose-Write-er | `shared/agents/prosewriter.md` | `claude-opus-4-6` |
 
 ## Delegation via Dispatch
 

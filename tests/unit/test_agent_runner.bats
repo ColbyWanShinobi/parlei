@@ -145,38 +145,44 @@ assert len(d['items']) > 0, 'items array empty'
 }
 
 @test "agent_runner: openclaw environment uses openclaw CLI" {
-  cat > "$STUB_BIN/openclaw" << 'OPENCLAW_EOF'
+  # Create stub openclaw CLI
+  STUB_BIN="$PARLEI_TEST_ROOT/stub_bin"
+  mkdir -p "$STUB_BIN"
+  cat > "$STUB_BIN/openclaw" <<OPENCLAW_EOF
 #!/usr/bin/env bash
+# OpenClaw uses --print flag for non-interactive mode
+# It doesn't take a --model parameter (uses internal routing)
+if [[ "\$1" == "--print" ]]; then
+  echo "called_with_print" > "$PARLEI_TEST_ROOT/openclaw_called"
+fi
 cat > /dev/null
-for i in "$@"; do
-  if [[ "${prev:-}" == "--model" ]]; then
-    echo "$i" > "$STUB_BIN/openclaw_model"
-  fi
-  prev="$i"
-done
 echo '{"from":"speaker","to":"checker","request_id":"req-speaker-20260329-001","items":[{"id":1,"status":"confirmed","notes":"openclaw stub"}]}'
 OPENCLAW_EOF
   chmod +x "$STUB_BIN/openclaw"
+
+  # Put stub bin at front of PATH
+  export PATH="$STUB_BIN:$PATH"
   echo "openclaw" > "$PARLEI_TEST_ROOT/.parlei-env"
 
   run bash "$PARLEI_TEST_ROOT/shared/tools/agent_runner.sh" speaker "$PARLEI_TEST_ROOT/request.json"
   [ "$status" -eq 0 ]
-  [[ "$(cat "$STUB_BIN/openclaw_model")" == *"haiku"* ]]
+  [[ "$(cat "$PARLEI_TEST_ROOT/openclaw_called")" == "called_with_print" ]]
 
-  rm -f "$PARLEI_TEST_ROOT/.parlei-env" "$STUB_BIN/openclaw_model" "$STUB_BIN/openclaw"
+  rm -f "$PARLEI_TEST_ROOT/.parlei-env" "$PARLEI_TEST_ROOT/openclaw_called"
+  rm -rf "$STUB_BIN"
 }
 
 @test "agent_runner: codex environment uses codex exec CLI" {
   # Create stub codex CLI that records the model it was called with
   STUB_BIN="$PARLEI_TEST_ROOT/stub_bin"
   mkdir -p "$STUB_BIN"
-  cat > "$STUB_BIN/codex" <<'CODEX_EOF'
+  cat > "$STUB_BIN/codex" <<CODEX_EOF
 #!/usr/bin/env bash
 # Record which model was passed via --model flag
-while [[ $# -gt 0 ]]; do
-  case "$1" in
+while [[ \$# -gt 0 ]]; do
+  case "\$1" in
     --model)
-      echo "$2" > "$PARLEI_TEST_ROOT/codex_model_called"
+      echo "\$2" > "$PARLEI_TEST_ROOT/codex_model_called"
       shift 2
       ;;
     *)

@@ -30,11 +30,25 @@ python3 -c "import json; json.load(open('$REQUEST_FILE'))" 2>/dev/null || {
   exit 1
 }
 
-# ── Read active environment ───────────────────────────────────────────────────
+# ── Auto-detect environment ──────────────────────────────────────────────────
 
-ENV="claude"
-ENV_FILE="$REPO_ROOT/.parlei-env"
-[[ -f "$ENV_FILE" ]] && ENV="$(tr -d '[:space:]' < "$ENV_FILE")"
+# Priority 1: Environment variable (allows explicit override)
+if [[ -n "${PARLEI_ENV:-}" ]]; then
+  ENV="$PARLEI_ENV"
+# Priority 2: Check which CLI tools are available (auto-detect)
+elif command -v claude &>/dev/null; then
+  ENV="claude"
+elif command -v codex &>/dev/null; then
+  ENV="codex"
+elif command -v openclaw &>/dev/null; then
+  ENV="openclaw"
+# Priority 3: Legacy .parlei-env file (for backward compatibility)
+elif [[ -f "$REPO_ROOT/.parlei-env" ]]; then
+  ENV="$(tr -d '[:space:]' < "$REPO_ROOT/.parlei-env")"
+# Priority 4: Default to claude
+else
+  ENV="claude"
+fi
 
 # ── Read model from routing table ─────────────────────────────────────────────
 
@@ -46,22 +60,54 @@ fi
 
 MODEL="$(python3 -c "
 import json, sys
-d = json.load(open('$ROUTING_FILE'))
-entry = d.get('$AGENT')
-if not entry:
-    print('Error: agent \"$AGENT\" not found in model_routing.json', file=sys.stderr)
-    sys.exit(1)
 
-# Try to get environment-specific model first, fall back to 'model' key
-env = '$ENV'
-model = entry.get(env)
-if not model:
-    # Fallback to legacy 'model' key for backward compatibility
-    model = entry.get('model')
-if not model:
-    print(f'Error: no model found for agent \"$AGENT\" in environment \"{env}\"', file=sys.stderr)
-    sys.exit(1)
-print(model)
+data = json.load(open('$ROUTING_FILE'))
+
+# Check if using new normalized schema (has 'agents' and 'environments' keys)
+if 'agents' in data and 'environments' in data:
+    # New schema: tier-based lookup
+    agent_data = data['agents'].get('$AGENT')
+    if not agent_data:
+        print('Error: agent \"$AGENT\" not found in model_routing.json', file=sys.stderr)
+        sys.exit(1)
+
+    tier = agent_data.get('tier')
+    if not tier:
+        print('Error: agent \"$AGENT\" has no tier specified', file=sys.stderr)
+        sys.exit(1)
+
+    env = '$ENV'
+    env_data = data['environments'].get(env)
+    if not env_data:
+        print(f'Error: environment \"{env}\" not found in model_routing.json', file=sys.stderr)
+        sys.exit(1)
+
+    # Handle environment aliasing (e.g., openclaw -> codex)
+    if 'use' in env_data:
+        env_data = data['environments'][env_data['use']]
+
+    model = env_data.get(tier)
+    if not model:
+        print(f'Error: no model for tier \"{tier}\" in environment \"{env}\"', file=sys.stderr)
+        sys.exit(1)
+
+    print(model)
+else:
+    # Legacy schema: direct lookup
+    entry = data.get('$AGENT')
+    if not entry:
+        print('Error: agent \"$AGENT\" not found in model_routing.json', file=sys.stderr)
+        sys.exit(1)
+
+    env = '$ENV'
+    model = entry.get(env)
+    if not model:
+        # Fallback to legacy 'model' key for backward compatibility
+        model = entry.get('model')
+    if not model:
+        print(f'Error: no model found for agent \"$AGENT\" in environment \"{env}\"', file=sys.stderr)
+        sys.exit(1)
+    print(model)
 ")" || exit 1
 
 # ── Build system prompt ───────────────────────────────────────────────────────
@@ -112,6 +158,14 @@ case "$ENV" in
     # codex exec is inherently non-interactive and accepts stdin
     RESPONSE="$(codex exec --model "$MODEL" --ephemeral < "$COMBINED_FILE")" || {
       echo "Error: codex CLI invocation failed for agent $AGENT (model: $MODEL)" >&2
+      exit 1
+    }
+    ;;
+  openclaw)
+    # OpenClaw CLI: Similar to claude CLI
+    # Uses --print for non-interactive mode
+    RESPONSE="$(openclaw --print < "$COMBINED_FILE")" || {
+      echo "Error: openclaw CLI invocation failed for agent $AGENT (model: $MODEL)" >&2
       exit 1
     }
     ;;

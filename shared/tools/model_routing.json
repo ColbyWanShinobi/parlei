@@ -6,15 +6,10 @@
       "balanced": "claude-sonnet-4-6",
       "premium": "claude-opus-4-6"
     },
-    "codex": {
+    "openclaw": {
       "lightweight": "gpt-5.1-codex-mini",
       "balanced": "gpt-5.4",
       "premium": "gpt-5.1-codex-max"
-    },
-    "openclaw": {
-      "lightweight": "claude-haiku-4-5-20251001",
-      "balanced": "claude-sonnet-4-6",
-      "premium": "claude-opus-4-6"
     }
   },
   "_pricing_notes": {
@@ -28,89 +23,93 @@
   "speaker": {
     "tier": "lightweight",
     "claude": "claude-haiku-4-5-20251001",
-    "codex": "gpt-5.1-codex-mini",
-    "openclaw": "claude-haiku-4-5-20251001",
-    "description": "Lightweight orchestrator — routes tasks, synthesizes results, communicates with the Spirit",
+    "openclaw": "gpt-5.1-codex-mini",
+    "description": "Lightweight orchestrator \u2014 routes tasks, synthesizes results, communicates with the Spirit",
     "rationale": "Speak-er's job is routing, coordination, and communication. Deep reasoning is not required. Fast, low-cost models provide appropriate performance for an orchestrator that handles every message."
   },
   "checker": {
     "tier": "lightweight",
     "claude": "claude-haiku-4-5-20251001",
-    "codex": "gpt-5.1-codex-mini",
-    "openclaw": "claude-haiku-4-5-20251001",
-    "description": "Mechanical verification — confirms tasks have corresponding implementations",
-    "rationale": "Check-er does pattern matching and presence/absence verification. It does not need to reason deeply — it needs to be fast and cheap."
+    "openclaw": "gpt-5.1-codex-mini",
+    "description": "Mechanical verification \u2014 confirms tasks have corresponding implementations",
+    "rationale": "Check-er does pattern matching and presence/absence verification. It does not need to reason deeply \u2014 it needs to be fast and cheap."
   },
   "tasker": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "Task decomposition and clarity — translates plan features into discrete, measurable tasks",
+    "openclaw": "gpt-5.4",
+    "description": "Task decomposition and clarity \u2014 translates plan features into discrete, measurable tasks",
     "rationale": "Task decomposition requires judgment about ambiguity and measurability. Balanced models provide good reasoning at moderate cost."
   },
   "planer": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "Structured planning — maintains PLAN.md, ensures feature coherence",
+    "openclaw": "gpt-5.4",
+    "description": "Structured planning \u2014 maintains PLAN.md, ensures feature coherence",
     "rationale": "Planning requires multi-step reasoning about dependencies and gaps. Balanced models are appropriate."
   },
   "prompter": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "Prompt engineering — optimizes prompts for accuracy, concision, and caching",
+    "openclaw": "gpt-5.4",
+    "description": "Prompt engineering \u2014 optimizes prompts for accuracy, concision, and caching",
     "rationale": "Prompter must understand how LLMs process text at a meta level. Balanced models have sufficient capability for this."
   },
   "deployer": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "DevOps and deployment — scripts, CI/CD, infrastructure operations",
+    "openclaw": "gpt-5.4",
+    "description": "DevOps and deployment \u2014 scripts, CI/CD, infrastructure operations",
     "rationale": "Deployer handles technical but well-defined work. Balanced models are appropriate."
   },
   "tester": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "Test authorship — writes unit, integration, and functionality tests",
+    "openclaw": "gpt-5.4",
+    "description": "Test authorship \u2014 writes unit, integration, and functionality tests",
     "rationale": "Good test coverage requires judgment about edge cases. Balanced models provide this at reasonable cost."
   },
   "coder": {
     "tier": "balanced",
     "claude": "claude-sonnet-4-6",
-    "codex": "gpt-5.4",
-    "openclaw": "claude-sonnet-4-6",
-    "description": "Principal-level implementation — writes, modifies, and refactors production-quality code",
-    "rationale": "Code writing is execution-heavy reasoning over a known spec and existing codebase. Balanced models handle large file contexts well and produce output fast enough that Speak-er is not blocked. Review-er (premium tier) is the quality backstop — Code-er does not need to be the final arbiter of correctness."
+    "openclaw": "gpt-5.4",
+    "description": "Principal-level implementation \u2014 writes, modifies, and refactors production-quality code",
+    "rationale": "Code writing is execution-heavy reasoning over a known spec and existing codebase. Balanced models handle large file contexts well and produce output fast enough that Speak-er is not blocked. Review-er (premium tier) is the quality backstop \u2014 Code-er does not need to be the final arbiter of correctness."
+  },
+  "techwriter": {
+    "tier": "balanced",
+    "claude": "claude-sonnet-4-6",
+    "openclaw": "gpt-5.4",
+    "description": "Technical documentation specialist \u2014 creates API docs, architecture documentation, installation guides, and all technical reference material",
+    "rationale": "Technical documentation requires understanding code structure and API design patterns. Balanced models provide sufficient capability for accurate, complete technical writing at moderate cost. The work is precise but not high-stakes compared to code review or architecture."
+  },
+  "prosewriter": {
+    "tier": "premium",
+    "claude": "claude-opus-4-6",
+    "openclaw": "gpt-5.1-codex-max",
+    "description": "Clear communication specialist \u2014 writes marketing content, blog posts, README files, announcements, and all user-facing non-technical content",
+    "rationale": "High-quality prose writing that is both clear and complete requires sophisticated language understanding and generation. Marketing and user-facing content represents the project to the world and must be compelling and professional. Premium models excel at nuanced writing that balances clarity, concision, and completeness."
   },
   "reviewer": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.1-codex-max",
-    "openclaw": "claude-opus-4-6",
-    "description": "Deep code review — analyzes code quality, security, consistency, and correctness",
+    "openclaw": "gpt-5.1-codex-max",
+    "description": "Deep code review \u2014 analyzes code quality, security, consistency, and correctness",
     "rationale": "Code review has high consequence. Subtle security flaws and architectural problems require the best available reasoning. Premium models are justified here."
   },
   "architecter": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.1-codex-max",
-    "openclaw": "claude-opus-4-6",
-    "description": "System design — infrastructure decisions, technology choices, communication patterns",
+    "openclaw": "gpt-5.1-codex-max",
+    "description": "System design \u2014 infrastructure decisions, technology choices, communication patterns",
     "rationale": "Architectural decisions are hard to reverse and have long-term consequences. Premium models provide the best judgment for high-stakes decisions."
   },
   "reoriginator": {
     "tier": "premium",
     "claude": "claude-opus-4-6",
-    "codex": "gpt-5.1-codex-max",
-    "openclaw": "claude-opus-4-6",
-    "description": "Major restructuring — reorganizes the repo for a new major version, may break things intentionally",
+    "openclaw": "gpt-5.1-codex-max",
+    "description": "Major restructuring \u2014 reorganizes the repo for a new major version, may break things intentionally",
     "rationale": "Re-Origination-er makes broad, potentially destructive changes. The highest model quality is appropriate when stakes are maximum."
-  }
+  },
+  "_codex_note": "Codex is not included because it cannot switch models per agent. It uses persona-switching with a single model for the entire conversation. Agent tiers are documentation only for Codex."
 }

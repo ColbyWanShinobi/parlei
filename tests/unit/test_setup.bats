@@ -93,9 +93,10 @@ teardown() {
 
 # ── T-077: Non-zero exit on failure ───────────────────────────────────────────
 
-@test "setup: no arguments exits 1" {
+@test "setup: no arguments defaults to 'all' and exits 0" {
   run bash "$PARLEI_TEST_ROOT/scripts/setup.sh"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"ALL environments"* ]]
 }
 
 @test "setup: unknown environment argument exits 1" {

@@ -1,0 +1,97 @@
+{
+  "_comment": "Model routing for environments that support per-agent model switching. Only Claude Code and OpenClaw can actually switch models - Codex uses persona-switching with a single model.",
+
+  "environments": {
+    "claude": {
+      "lightweight": "claude-haiku-4-5-20251001",
+      "balanced": "claude-sonnet-4-6",
+      "premium": "claude-opus-4-6",
+      "pricing": {
+        "lightweight": "$0.25/$1.25 per M tokens",
+        "balanced": "$3.00/$15.00 per M tokens",
+        "premium": "$15.00/$75.00 per M tokens"
+      }
+    },
+    "openclaw": {
+      "lightweight": "gpt-5.1-codex-mini",
+      "balanced": "gpt-5.4",
+      "premium": "gpt-5.1-codex-max",
+      "pricing": {
+        "lightweight": "$0.25/$2.00 per M tokens",
+        "balanced": "$2.50/$15.00 per M tokens",
+        "premium": "$1.25/$10.00 per M tokens"
+      }
+    }
+  },
+
+  "codex_note": "Codex is not included in environments because it cannot switch models per agent. It uses persona-switching with a single model for the entire conversation. The tier assignments in the agents section show INTENDED capability levels for documentation purposes only.",
+  
+  "agents": {
+    "speaker": {
+      "tier": "lightweight",
+      "description": "Lightweight orchestrator — routes tasks, synthesizes results, communicates with the Spirit",
+      "rationale": "Routing and coordination only. Deep reasoning not required. Fast, low-cost models are appropriate."
+    },
+    "checker": {
+      "tier": "lightweight",
+      "description": "Mechanical verification — confirms tasks have corresponding implementations",
+      "rationale": "Pattern matching and verification. Fast and cheap is optimal."
+    },
+    "planer": {
+      "tier": "balanced",
+      "description": "Strategic vision — maintains project coherence, guards against scope creep",
+      "rationale": "Planning needs reasoning about dependencies and interactions. Balanced models sufficient."
+    },
+    "tasker": {
+      "tier": "balanced",
+      "description": "Task decomposition — translates plan features into discrete, measurable tasks",
+      "rationale": "Requires judgment about ambiguity and measurability. Balanced models appropriate."
+    },
+    "prompter": {
+      "tier": "balanced",
+      "description": "Prompt optimization — reduces token cost, improves caching, streamlines communication",
+      "rationale": "Meta-level understanding of LLM text processing. Balanced models handle this well."
+    },
+    "deployer": {
+      "tier": "balanced",
+      "description": "DevOps and deployment — scripts, CI/CD, infrastructure operations",
+      "rationale": "Technical but well-defined work. Balanced models appropriate."
+    },
+    "tester": {
+      "tier": "balanced",
+      "description": "Test coverage — writes unit, integration, and functionality tests",
+      "rationale": "Edge case judgment needed. Balanced models provide this at reasonable cost."
+    },
+    "coder": {
+      "tier": "balanced",
+      "description": "Principal-level implementation — writes, modifies, and refactors production-quality code",
+      "rationale": "Execution-heavy reasoning over known specs. Balanced models handle large contexts well. Review-er is the quality backstop."
+    },
+    "techwriter": {
+      "tier": "balanced",
+      "description": "Technical documentation — API docs, architecture documentation, installation guides",
+      "rationale": "Precision required but not high-stakes. Balanced models sufficient for accurate technical writing."
+    },
+    "reviewer": {
+      "tier": "premium",
+      "description": "Deep security and quality audit — finds subtle bugs, injection risks, and logic flaws",
+      "rationale": "Last line of defense. Must catch what others miss. Premium models justified for security work."
+    },
+    "architecter": {
+      "tier": "premium",
+      "description": "Infrastructure and architectural decisions — databases, frameworks, deployment patterns",
+      "rationale": "High-stakes decisions with long-term consequences. Best models needed for trade-off evaluation."
+    },
+    "reoriginator": {
+      "tier": "premium",
+      "description": "Major refactoring — rewrites entire subsystems, restructures for new requirements",
+      "rationale": "Large-scale restructuring with backward compatibility. Deep understanding required."
+    },
+    "prosewriter": {
+      "tier": "premium",
+      "description": "Clear communication — marketing content, blog posts, README files, announcements",
+      "rationale": "User-facing content represents the project. Premium models excel at nuanced, clear writing."
+    }
+  }
+}
+

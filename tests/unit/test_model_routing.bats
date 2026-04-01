@@ -24,11 +24,11 @@ teardown() {
   [ "$output" = "ok" ]
 }
 
-@test "model_routing: all 11 expected agents are present" {
+@test "model_routing: all 13 expected agents are present" {
   run python3 -c "
 import json
 d = json.load(open('$ROUTING'))
-expected = ['speaker','planer','tasker','prompter','checker','reviewer','architecter','deployer','tester','reoriginator','coder']
+expected = ['speaker','planer','tasker','prompter','checker','reviewer','architecter','deployer','tester','reoriginator','coder','techwriter','prosewriter']
 missing = [a for a in expected if a not in d]
 if missing:
     print('missing:', missing)
@@ -133,11 +133,11 @@ print('ok' if tier == 'balanced' else f'expected balanced, got: {tier}')
   [ "$output" = "ok" ]
 }
 
-@test "model_routing: planer/prompter/deployer/tester/coder use balanced tier" {
+@test "model_routing: planer/prompter/deployer/tester/coder/techwriter use balanced tier" {
   run python3 -c "
 import json, sys
 d = json.load(open('$ROUTING'))
-balanced_agents = ['planer','prompter','deployer','tester','coder']
+balanced_agents = ['planer','prompter','deployer','tester','coder','techwriter']
 for agent in balanced_agents:
     tier = d[agent].get('tier', '')
     if tier != 'balanced':
@@ -155,6 +155,28 @@ import json
 d = json.load(open('$ROUTING'))
 tier = d['architecter'].get('tier', '')
 print('ok' if tier == 'premium' else f'expected premium, got: {tier}')
+"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
+}
+
+@test "model_routing: prosewriter uses premium tier (high-quality prose)" {
+  run python3 -c "
+import json
+d = json.load(open('$ROUTING'))
+tier = d['prosewriter'].get('tier', '')
+print('ok' if tier == 'premium' else f'expected premium, got: {tier}')
+"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ok" ]
+}
+
+@test "model_routing: techwriter uses balanced tier (technical documentation)" {
+  run python3 -c "
+import json
+d = json.load(open('$ROUTING'))
+tier = d['techwriter'].get('tier', '')
+print('ok' if tier == 'balanced' else f'expected balanced, got: {tier}')
 "
   [ "$status" -eq 0 ]
   [ "$output" = "ok" ]
@@ -216,7 +238,7 @@ print('ok')
   run python3 -c "
 import json, sys
 d = json.load(open('$ROUTING'))
-balanced_agents = ['planer', 'tasker', 'prompter', 'deployer', 'tester', 'coder']
+balanced_agents = ['planer', 'tasker', 'prompter', 'deployer', 'tester', 'coder', 'techwriter']
 for agent in balanced_agents:
     model = d[agent].get('codex', '')
     if model != 'gpt-5.4':
@@ -232,7 +254,7 @@ print('ok')
   run python3 -c "
 import json, sys
 d = json.load(open('$ROUTING'))
-premium_agents = ['reviewer', 'architecter', 'reoriginator']
+premium_agents = ['reviewer', 'architecter', 'reoriginator', 'prosewriter']
 for agent in premium_agents:
     model = d[agent].get('codex', '')
     if model != 'gpt-5.1-codex-max':

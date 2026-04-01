@@ -1,0 +1,301 @@
+#!/usr/bin/env bash
+# parlei — Global CLI wrapper for Parlei parliament of AI agents
+# This script provides a convenient command-line interface to Parlei from anywhere.
+
+set -euo pipefail
+
+# ── Locate Parlei installation ────────────────────────────────────────────────
+
+SCRIPT_PATH="$(realpath "${BASH_SOURCE[0]}")"
+PARLEI_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+
+if [[ ! -d "$PARLEI_ROOT/shared" ]] || [[ ! -d "$PARLEI_ROOT/scripts" ]]; then
+  echo "Error: Parlei installation not found at $PARLEI_ROOT" >&2
+  exit 1
+fi
+
+# ── Command routing ───────────────────────────────────────────────────────────
+
+usage() {
+  cat <<EOF
+parlei — Parliament of AI Agents
+
+Usage: parlei <command> [arguments]
+
+Commands:
+  setup [env]         Set up Parlei (all|claude|codex|openclaw, default: all)
+  claude              Launch Claude Code with Parlei environment
+  codex               Launch Codex with Parlei environment
+  openclaw            Launch OpenClaw with Parlei environment
+  test [category]     Run tests (unit|integration|functionality|all)
+  backup              Create backup of agent memory
+  restore <date>      Restore from backup (YYYY-MM-DD)
+  optimize            Optimize agent memory (deduplicate, promote, prune)
+  status              Show current environment and agent status
+  bootstrap <env>     Display bootstrap instructions for environment
+  dispatch <agent>    Dispatch a task to a specific agent (interactive)
+  help                Show this help message
+
+Examples:
+  parlei setup                        # Set up for ALL environments (recommended)
+  parlei codex                        # Launch Codex with Parlei
+  parlei claude                       # Launch Claude Code with Parlei
+  parlei test unit                    # Run unit tests
+  parlei backup                       # Create memory backup
+  parlei status                       # Show current configuration
+  parlei bootstrap codex              # Show Codex bootstrap instructions
+
+Multi-Environment Usage:
+  Parlei auto-detects which AI CLI is available (claude, codex, openclaw).
+  Run 'parlei setup' once to enable ALL environments simultaneously.
+  Launch specific tools with 'parlei codex' or 'parlei claude'.
+  All environments share the same agent memory!
+
+Environment:
+  Current installation: $PARLEI_ROOT
+
+EOF
+}
+
+COMMAND="${1:-help}"
+shift || true
+
+case "$COMMAND" in
+  setup)
+    exec bash "$PARLEI_ROOT/scripts/setup.sh" "${1:-all}"
+    ;;
+
+  claude)
+    if ! command -v claude &>/dev/null; then
+      echo "Error: 'claude' command not found in PATH" >&2
+      echo "Install Claude Code from https://claude.ai/code" >&2
+      exit 1
+    fi
+
+    export PARLEI_ENV=claude
+
+    # Check if Claude Code can be launched with a directory
+    # If launched from Parlei directory, CLAUDE.md should auto-load
+    if [[ $# -eq 0 ]]; then
+      cat <<EOF
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🦉 Launching Claude Code with Parlei
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Environment:  claude (PARLEI_ENV=claude)
+Bootstrap:    $PARLEI_ROOT/CLAUDE.md
+
+Auto-loading behavior:
+  Claude Code should auto-load CLAUDE.md from the repo root.
+  Opening Claude Code with this directory as workspace...
+
+Models configured:
+  • Lightweight: claude-haiku-4-5 (\$0.25/\$1.25 per M)
+  • Balanced:    claude-sonnet-4-6 (\$3.00/\$15.00 per M)
+  • Premium:     claude-opus-4-6 (\$15.00/\$75.00 per M)
+
+The parliament is in session. 🦉
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+      # Try to open Claude Code with the Parlei directory
+      # Claude Code auto-loads CLAUDE.md from repo root
+      cd "$PARLEI_ROOT"
+      exec claude .
+    fi
+
+    # If arguments provided, pass them through
+    exec claude "$@"
+    ;;
+
+  codex)
+    if ! command -v codex &>/dev/null; then
+      echo "Error: 'codex' command not found in PATH" >&2
+      echo "Install Codex CLI: npm install -g @openai/codex-cli" >&2
+      exit 1
+    fi
+
+    export PARLEI_ENV=codex
+
+    # If no arguments provided, auto-load bootstrap
+    if [[ $# -eq 0 ]]; then
+      cat <<EOF
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🦉 Launching Codex with Parlei
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Environment:  codex (PARLEI_ENV=codex)
+Bootstrap:    $PARLEI_ROOT/bootstraps/CODEX.md
+
+Auto-loading Parlei bootstrap...
+
+Models configured:
+  • Lightweight: gpt-5.1-codex-mini (\$0.25/\$2.00 per M)
+  • Balanced:    gpt-5.4 (\$2.50/\$15.00 per M)
+  • Premium:     gpt-5.1-codex-max (\$1.25/\$10.00 per M)
+
+The parliament is in session. 🦉
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+      # Auto-load bootstrap by passing it as the initial prompt
+      exec codex "Read $PARLEI_ROOT/bootstraps/CODEX.md and follow all loading instructions"
+    fi
+
+    # If arguments provided, pass them through
+    exec codex "$@"
+    ;;
+
+  openclaw)
+    if ! command -v openclaw &>/dev/null; then
+      echo "Error: 'openclaw' command not found in PATH" >&2
+      echo "Install OpenClaw from https://openclaw.ai" >&2
+      exit 1
+    fi
+
+    export PARLEI_ENV=openclaw
+
+    if [[ $# -eq 0 ]]; then
+      cat <<EOF
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🦉 Launching OpenClaw with Parlei
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Environment:  openclaw (PARLEI_ENV=openclaw)
+Bootstrap:    $PARLEI_ROOT/bootstraps/OPENCLAW.md
+
+Note: OpenClaw bootstrap must be loaded manually.
+Please load the bootstrap file after OpenClaw starts.
+
+Models configured:
+  • Lightweight: claude-haiku-4-5 (\$0.25/\$1.25 per M)
+  • Balanced:    claude-sonnet-4-6 (\$3.00/\$15.00 per M)
+  • Premium:     claude-opus-4-6 (\$15.00/\$75.00 per M)
+
+The parliament is in session. 🦉
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+    fi
+
+    exec openclaw "$@"
+    ;;
+
+  test)
+    exec bash "$PARLEI_ROOT/scripts/run_tests.sh" "${1:-all}"
+    ;;
+
+  backup)
+    exec bash "$PARLEI_ROOT/scripts/backup.sh"
+    ;;
+
+  restore)
+    if [[ $# -ne 1 ]]; then
+      echo "Usage: parlei restore <YYYY-MM-DD>" >&2
+      exit 1
+    fi
+    exec bash "$PARLEI_ROOT/scripts/restore.sh" "$1"
+    ;;
+
+  optimize)
+    exec bash "$PARLEI_ROOT/scripts/memory_optimize.sh"
+    ;;
+
+  status)
+    echo "━━━ Parlei Status ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Installation: $PARLEI_ROOT"
+    echo ""
+
+    # Check which CLI tools are available
+    echo "Detected environments:"
+    DETECTED_ANY=false
+    if command -v claude &>/dev/null; then
+      echo "  ✓ Claude Code  ($(command -v claude))"
+      DETECTED_ANY=true
+    fi
+    if command -v codex &>/dev/null; then
+      echo "  ✓ Codex        ($(command -v codex))"
+      DETECTED_ANY=true
+    fi
+    if command -v openclaw &>/dev/null; then
+      echo "  ✓ OpenClaw     ($(command -v openclaw))"
+      DETECTED_ANY=true
+    fi
+    if [[ "$DETECTED_ANY" == "false" ]]; then
+      echo "  (none detected - install Claude, Codex, or OpenClaw)"
+    fi
+    echo ""
+
+    # Check for environment preference marker
+    if [[ -f "$PARLEI_ROOT/.parlei-env" ]]; then
+      ENV="$(cat "$PARLEI_ROOT/.parlei-env")"
+      echo "Preference:   $ENV (set via PARLEI_ENV to override)"
+    else
+      echo "Preference:   Auto-detect (run 'parlei setup <env>' to set preference)"
+    fi
+    echo ""
+
+    echo "Available agents:"
+    if [[ -f "$PARLEI_ROOT/shared/tools/model_routing.json" ]]; then
+      python3 -c "
+import json
+d = json.load(open('$PARLEI_ROOT/shared/tools/model_routing.json'))
+agents = [k for k in d.keys() if not k.startswith('_')]
+for agent in sorted(agents):
+    tier = d[agent].get('tier', 'unknown')
+    print(f'  • {agent:15} ({tier})')
+"
+    fi
+    echo ""
+
+    if [[ -d "$PARLEI_ROOT/backups" ]]; then
+      BACKUP_COUNT=$(find "$PARLEI_ROOT/backups" -name "*.tar.gz" 2>/dev/null | wc -l)
+      echo "Backups:      $BACKUP_COUNT"
+    fi
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    ;;
+
+  bootstrap)
+    if [[ $# -ne 1 ]]; then
+      echo "Usage: parlei bootstrap <environment>" >&2
+      echo "  Environments: claude | codex | openclaw" >&2
+      exit 1
+    fi
+    
+    ENV="$1"
+    case "$ENV" in
+      claude)
+        cat "$PARLEI_ROOT/CLAUDE.md"
+        ;;
+      codex)
+        cat "$PARLEI_ROOT/bootstraps/CODEX.md"
+        ;;
+      openclaw)
+        cat "$PARLEI_ROOT/bootstraps/OPENCLAW.md"
+        ;;
+      *)
+        echo "Error: unknown environment '$ENV'" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+
+  dispatch)
+    echo "Error: Interactive dispatch not yet implemented" >&2
+    echo "To dispatch manually, use: bash $PARLEI_ROOT/shared/tools/dispatch.sh <agent> <request.json>" >&2
+    exit 1
+    ;;
+
+  help|--help|-h)
+    usage
+    ;;
+
+  *)
+    echo "Error: unknown command '$COMMAND'" >&2
+    echo ""
+    usage
+    exit 1
+    ;;
+esac
+
