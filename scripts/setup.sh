@@ -56,7 +56,7 @@ fi
 # Each agent needs an inbox and outbox for the dispatch IPC system.
 # .gitkeep files ensure the directories are tracked in version control.
 
-AGENTS=(speaker planer tasker prompter checker reviewer architecter deployer tester reoriginator)
+AGENTS=(speaker planer tasker prompter checker reviewer architecter deployer tester reoriginator coder)
 
 for AGENT in "${AGENTS[@]}"; do
   AGENT_MEM="$SHARED_DIR/memory/$AGENT"
