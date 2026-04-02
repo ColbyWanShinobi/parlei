@@ -1,3 +1,71 @@
+#!/usr/bin/env bash
+# build_claude_md.sh — Generate CLAUDE.md bootstrap file for Claude Code
+# Usage: build_claude_md.sh
+# Output: Writes to ../CLAUDE.md
+# Auto-discovers agent roster and generates loading instructions
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SHARED_DIR="$REPO_ROOT/shared"
+AGENTS_DIR="$SHARED_DIR/agents"
+OUTPUT_FILE="$REPO_ROOT/CLAUDE.md"
+
+# Collect all agent names from shared/agents/*.md (excluding speaker)
+get_agents() {
+  local agent_list=()
+  for agent_file in "$AGENTS_DIR"/*.md; do
+    [[ ! -f "$agent_file" ]] && continue
+    local agent=$(basename "$agent_file" .md)
+    [[ "$agent" != "speaker" ]] && agent_list+=("$agent")
+  done
+  printf '%s\n' "${agent_list[@]}" | sort
+}
+
+# Map agent filename to display title
+get_agent_title() {
+  local agent="$1"
+  case "$agent" in
+    planer)         echo "Plan-er" ;;
+    tasker)         echo "Task-er" ;;
+    prompter)       echo "Prompt-er" ;;
+    checker)        echo "Check-er" ;;
+    reviewer)       echo "Review-er" ;;
+    architecter)    echo "Architect-er" ;;
+    deployer)       echo "Deploy-er" ;;
+    tester)         echo "Test-er" ;;
+    reoriginator)   echo "Re-Origination-er" ;;
+    coder)          echo "Code-er" ;;
+    techwriter)     echo "Tech-Write-er" ;;
+    prosewriter)    echo "Prose-Write-er" ;;
+    *)              echo "${agent^}-er" ;;  # fallback: capitalize first letter
+  esac
+}
+
+# Build agent roster table
+build_agent_table() {
+  local agents=($(get_agents))
+
+  echo "| Agent | File | Model |"
+  echo "|---|---|---|"
+
+  # Use model_routing.json to look up each agent's model
+  for agent in "${agents[@]}"; do
+    local agent_title=$(get_agent_title "$agent")
+
+    # Attempt to look up model from model_routing.json
+    local model="claude-sonnet-4-6"  # default
+    if [[ -f "$SHARED_DIR/tools/model_routing.json" ]]; then
+      model=$(jq -r ".agents.\"$agent\" // \"$model\"" "$SHARED_DIR/tools/model_routing.json" 2>/dev/null || echo "$model")
+    fi
+
+    echo "| $agent_title | \`shared/agents/$agent.md\` | \`$model\` |"
+  done
+}
+
+# Generate the full CLAUDE.md file
+cat > "$OUTPUT_FILE" << 'BOOTSTRAP_EOF'
 # 🦉 Parlei — Claude Code Bootstrap
 
 > *You are entering a Parliament of Owls. Read carefully before you speak.*
@@ -32,20 +100,13 @@ All interaction begins with **Speak-er**. The Spirit of the Forest (the human or
 
 The following specialists are available. You do not read their files — you dispatch to them. Each runs as a separate subprocess with its own model and context.
 
-| Agent | File | Model |
-|---|---|---|
-| Architect-er | `shared/agents/architecter.md` | `claude-sonnet-4-6` |
-| Check-er | `shared/agents/checker.md` | `claude-sonnet-4-6` |
-| Code-er | `shared/agents/coder.md` | `claude-sonnet-4-6` |
-| Deploy-er | `shared/agents/deployer.md` | `claude-sonnet-4-6` |
-| Plan-er | `shared/agents/planer.md` | `claude-sonnet-4-6` |
-| Prompt-er | `shared/agents/prompter.md` | `claude-sonnet-4-6` |
-| Prose-Write-er | `shared/agents/prosewriter.md` | `claude-sonnet-4-6` |
-| Re-Origination-er | `shared/agents/reoriginator.md` | `claude-sonnet-4-6` |
-| Review-er | `shared/agents/reviewer.md` | `claude-sonnet-4-6` |
-| Task-er | `shared/agents/tasker.md` | `claude-sonnet-4-6` |
-| Tech-Write-er | `shared/agents/techwriter.md` | `claude-sonnet-4-6` |
-| Test-er | `shared/agents/tester.md` | `claude-sonnet-4-6` |
+BOOTSTRAP_EOF
+
+# Append the agent table (generated dynamically)
+build_agent_table >> "$OUTPUT_FILE"
+
+# Append the rest of the bootstrap
+cat >> "$OUTPUT_FILE" << 'BOOTSTRAP_EOF'
 
 ## ⚠️ CRITICAL — Delegation via Dispatch
 
@@ -72,3 +133,8 @@ All context a specialist needs must be in the `context` field of the request —
 ---
 
 **The parliament is in session. 🦉**
+BOOTSTRAP_EOF
+
+echo "✓ Generated: $OUTPUT_FILE"
+echo "  Agent roster auto-discovered from: $AGENTS_DIR"
+echo "  Total agents: $(get_agents | wc -l)"

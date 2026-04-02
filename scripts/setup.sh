@@ -288,7 +288,12 @@ if [[ "$ENV" == "all" ]] || [[ "$ENV" == "openclaw" ]]; then
   setup_openclaw_workspace
 fi
 
-# ── Final validation ──────────────────────────────────────────────────────────
+# ── Generate/validate bootstrap files ────────────────────────────────────────
+
+# Generate CLAUDE.md from shared agents
+if [[ -x "$SCRIPT_DIR/build_claude_md.sh" ]]; then
+  bash "$SCRIPT_DIR/build_claude_md.sh" > /dev/null 2>&1 || true
+fi
 
 VALIDATION_ERRORS=0
 
