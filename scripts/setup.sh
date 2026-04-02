@@ -173,6 +173,37 @@ register_cron() {
 register_cron "$MEMORY_CRON" "parlei-memory"
 register_cron "$BACKUP_CRON"  "parlei-backup"
 
+# ── Create ~/.local/bin symlink ───────────────────────────────────────────────
+
+PARLEI_BIN="$REPO_ROOT/bin/parlei"
+LOCAL_BIN="$HOME/.local/bin"
+LOCAL_SYMLINK="$LOCAL_BIN/parlei"
+
+if [[ ! -d "$LOCAL_BIN" ]]; then
+  mkdir -p "$LOCAL_BIN"
+  echo "Created: $LOCAL_BIN"
+fi
+
+if [[ -L "$LOCAL_SYMLINK" ]]; then
+  existing_target="$(readlink "$LOCAL_SYMLINK")"
+  if [[ "$existing_target" == "$PARLEI_BIN" ]]; then
+    echo "✓ ~/.local/bin/parlei symlink already configured correctly"
+  else
+    echo "Warning: ~/.local/bin/parlei points to $existing_target (expected $PARLEI_BIN)"
+    echo "  Remove manually to update: rm $LOCAL_SYMLINK"
+  fi
+elif [[ -e "$LOCAL_SYMLINK" ]]; then
+  echo "Warning: $LOCAL_SYMLINK exists but is not a symlink — skipping"
+else
+  ln -s "$PARLEI_BIN" "$LOCAL_SYMLINK"
+  echo "✓ Created symlink: $LOCAL_SYMLINK -> $PARLEI_BIN"
+fi
+
+if [[ ":$PATH:" != *":$LOCAL_BIN:"* ]]; then
+  echo "Note: Add ~/.local/bin to your PATH:"
+  echo "  echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.zshrc"
+fi
+
 # ── OpenClaw workspace symlink setup ──────────────────────────────────────────
 # If OpenClaw environment is selected (all or openclaw), set up symlink in workspace
 
@@ -383,6 +414,7 @@ echo "Shared resources:"
 echo "  Memory:     $SHARED_DIR/memory/"
 echo "  Agents:     13 configured (2 lightweight, 7 balanced, 4 premium)"
 echo "  Cron jobs:  parlei-memory (03:00), parlei-backup (02:30)"
+echo "  CLI:        ~/.local/bin/parlei"
 echo ""
 echo "Use 'parlei status' to check configuration anytime."
 echo "The parliament is in session. 🦉"

@@ -8,11 +8,60 @@ set -euo pipefail
 
 SCRIPT_PATH="$(realpath "${BASH_SOURCE[0]}")"
 PARLEI_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+INVOCATION_DIR="$(pwd)"
 
 if [[ ! -d "$PARLEI_ROOT/shared" ]] || [[ ! -d "$PARLEI_ROOT/scripts" ]]; then
   echo "Error: Parlei installation not found at $PARLEI_ROOT" >&2
   exit 1
 fi
+
+# ── Ensure CLAUDE.md exists with Parlei bootstrap at top ─────────────────────
+# Creates or prepends the bootstrap block to CLAUDE.md in the given directory.
+# Uses absolute paths so the file works from any working directory.
+
+ensure_claude_md() {
+  local target_dir="$1"
+  local claude_md="$target_dir/CLAUDE.md"
+  local marker="<!-- parlei-bootstrap -->"
+
+  local bootstrap_block
+  bootstrap_block="$(cat <<BOOTSTRAP
+${marker}
+# 🦉 Parlei — Claude Code Bootstrap
+
+> *You are entering a Parliament of Owls. Read carefully before you speak.*
+
+## Loading Instructions
+
+Load only Speak-er's own files. Do not read specialist agent files into this context
+— specialists run as separate subprocesses via \`dispatch.sh\`.
+
+1. Read \`${PARLEI_ROOT}/shared/agents/speaker.md\` — your role, responsibilities, and delegation procedure.
+2. Read \`${PARLEI_ROOT}/shared/personalities/speaker.md\` — your tone and communication style.
+3. Read \`${PARLEI_ROOT}/shared/memory/speaker/identity.md\` and \`${PARLEI_ROOT}/shared/memory/speaker/long_term.md\` — your persistent memory.
+4. Check \`${PARLEI_ROOT}/shared/memory/speaker/current_task.md\` — if it exists with \`Status: in-progress\`, you have an interrupted task. Notify the Spirit of the Forest before resuming.
+5. Read \`${PARLEI_ROOT}/shared/tools/protocol.md\` — the inter-agent communication protocol.
+6. Read \`${PARLEI_ROOT}/shared/tools/current_task_spec.md\` — the task tracking format every agent uses.
+
+Do not break character. Do not address the Spirit as anything other than "Spirit of the Forest" unless instructed otherwise.
+
+<!-- end-parlei-bootstrap -->
+
+BOOTSTRAP
+)"
+
+  if [[ ! -f "$claude_md" ]]; then
+    printf '%s\n' "$bootstrap_block" > "$claude_md"
+    echo "✓ Created: $claude_md"
+  elif ! grep -qF "$marker" "$claude_md"; then
+    local tmp
+    tmp="$(mktemp)"
+    { printf '%s\n' "$bootstrap_block"; cat "$claude_md"; } > "$tmp" && mv "$tmp" "$claude_md"
+    echo "✓ Prepended Parlei bootstrap to: $claude_md"
+  else
+    echo "✓ $claude_md already has Parlei bootstrap"
+  fi
+}
 
 # ── Command routing ───────────────────────────────────────────────────────────
 
@@ -74,8 +123,9 @@ case "$COMMAND" in
 
     export PARLEI_ENV=claude
 
-    # Check if Claude Code can be launched with a directory
-    # If launched from Parlei directory, CLAUDE.md should auto-load
+    # Ensure CLAUDE.md in the invocation directory has Parlei bootstrap at top
+    ensure_claude_md "$INVOCATION_DIR"
+
     if [[ $# -eq 0 ]]; then
       cat <<EOF
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -83,11 +133,9 @@ case "$COMMAND" in
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Environment:  claude (PARLEI_ENV=claude)
-Bootstrap:    $PARLEI_ROOT/CLAUDE.md
-
-Auto-loading behavior:
-  Claude Code should auto-load CLAUDE.md from the repo root.
-  Opening Claude Code with this directory as workspace...
+Working dir:  $INVOCATION_DIR
+Bootstrap:    $INVOCATION_DIR/CLAUDE.md
+Parlei root:  $PARLEI_ROOT
 
 Models configured:
   • Lightweight: claude-haiku-4-5 (\$0.25/\$1.25 per M)
@@ -98,10 +146,8 @@ The parliament is in session. 🦉
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 EOF
-      # Try to open Claude Code with the Parlei directory
-      # Claude Code auto-loads CLAUDE.md from repo root
-      cd "$PARLEI_ROOT"
-      exec claude .
+      cd "$INVOCATION_DIR"
+      exec claude
     fi
 
     # If arguments provided, pass them through

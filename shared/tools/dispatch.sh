@@ -122,10 +122,37 @@ cp "$REQUEST_FILE" "$INBOX_FILE"
 
 RUNNER_OUTPUT=""
 RUNNER_EXIT=0
+DISPATCH_START="$(date +%s)"
 if [[ -n "${DISPATCH_CAPTURE_PATH:-}" ]]; then
   printf '%s\n' "$INBOX_FILE" > "$DISPATCH_CAPTURE_PATH"
 fi
-RUNNER_OUTPUT="$("$SCRIPT_DIR/agent_runner.sh" "$AGENT" "$INBOX_FILE" 2>&1)" || RUNNER_EXIT=$?
+
+echo "[parlei] dispatching → $AGENT ($REQUEST_ID)" >&2
+
+RUNNER_TMPFILE="$(mktemp)"
+trap 'rm -f "$RUNNER_TMPFILE"' EXIT
+
+"$SCRIPT_DIR/agent_runner.sh" "$AGENT" "$INBOX_FILE" > "$RUNNER_TMPFILE" 2>&1 &
+RUNNER_PID=$!
+
+SPIN_CHARS=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+SPIN_IDX=0
+while kill -0 "$RUNNER_PID" 2>/dev/null; do
+  ELAPSED=$(( $(date +%s) - DISPATCH_START ))
+  printf "\r[parlei] %s %s ... %ds" "${SPIN_CHARS[$((SPIN_IDX % 10))]}" "$AGENT" "$ELAPSED" >&2
+  SPIN_IDX=$(( SPIN_IDX + 1 ))
+  sleep 0.2
+done
+wait "$RUNNER_PID" || RUNNER_EXIT=$?
+
+ELAPSED=$(( $(date +%s) - DISPATCH_START ))
+if [[ $RUNNER_EXIT -eq 0 ]]; then
+  printf "\r[parlei] ✓ %s done (%ds)               \n" "$AGENT" "$ELAPSED" >&2
+else
+  printf "\r[parlei] ✗ %s failed (%ds)              \n" "$AGENT" "$ELAPSED" >&2
+fi
+
+RUNNER_OUTPUT="$(cat "$RUNNER_TMPFILE")"
 
 if [[ $RUNNER_EXIT -ne 0 ]]; then
   rm -f "$INBOX_FILE"

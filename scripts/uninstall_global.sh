@@ -3,39 +3,62 @@
 
 set -euo pipefail
 
-# ── Find parlei installation ──────────────────────────────────────────────────
+LOCAL_SYMLINK="$HOME/.local/bin/parlei"
 
-if ! command -v parlei &>/dev/null; then
-  echo "parlei command not found in PATH"
+# ── Find parlei installation(s) ───────────────────────────────────────────────
+
+FOUND_PATHS=()
+
+# Check the well-known ~/.local/bin location first
+if [[ -L "$LOCAL_SYMLINK" ]]; then
+  FOUND_PATHS+=("$LOCAL_SYMLINK")
+elif [[ -e "$LOCAL_SYMLINK" ]]; then
+  echo "Warning: $LOCAL_SYMLINK exists but is not a symlink — skipping" >&2
+fi
+
+# Also check whatever is in PATH (may differ or be a second install)
+if command -v parlei &>/dev/null; then
+  PARLEI_PATH="$(command -v parlei)"
+  # Add only if not already in the list
+  already_found=false
+  for p in "${FOUND_PATHS[@]+"${FOUND_PATHS[@]}"}"; do
+    [[ "$p" == "$PARLEI_PATH" ]] && already_found=true && break
+  done
+  if [[ "$already_found" == false ]]; then
+    if [[ -L "$PARLEI_PATH" ]]; then
+      FOUND_PATHS+=("$PARLEI_PATH")
+    else
+      echo "Warning: $PARLEI_PATH is not a symlink (not installed by setup.sh or install_global.sh)" >&2
+    fi
+  fi
+fi
+
+if [[ ${#FOUND_PATHS[@]} -eq 0 ]]; then
+  echo "No parlei symlinks found to remove."
   exit 0
 fi
 
-PARLEI_PATH="$(command -v parlei)"
+# ── Confirm and remove ────────────────────────────────────────────────────────
 
-# ── Verify it's a symlink we installed ────────────────────────────────────────
-
-if [[ ! -L "$PARLEI_PATH" ]]; then
-  echo "Error: $PARLEI_PATH is not a symlink (not installed by install_global.sh)" >&2
-  exit 1
-fi
-
-TARGET="$(readlink "$PARLEI_PATH")"
-echo "Found parlei at: $PARLEI_PATH"
-echo "Points to: $TARGET"
+for path in "${FOUND_PATHS[@]}"; do
+  target="$(readlink "$path")"
+  echo "Found: $path -> $target"
+done
 echo ""
 
-read -p "Remove this symlink? (y/N) " -n 1 -r
+read -p "Remove the above symlink(s)? (y/N) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   echo "Uninstall cancelled."
   exit 0
 fi
 
-# ── Remove symlink ────────────────────────────────────────────────────────────
+for path in "${FOUND_PATHS[@]}"; do
+  target="$(readlink "$path")"
+  rm "$path"
+  echo "✓ Removed $path"
+done
 
-rm "$PARLEI_PATH"
-echo "✓ Removed $PARLEI_PATH"
 echo ""
-echo "The Parlei repository at $(dirname "$(dirname "$TARGET")") is still intact."
-echo "You can reinstall anytime with: bash scripts/install_global.sh"
-
+echo "The Parlei repository is still intact."
+echo "You can reinstall anytime with: bash scripts/setup.sh"

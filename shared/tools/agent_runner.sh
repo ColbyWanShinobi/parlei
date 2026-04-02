@@ -138,6 +138,8 @@ trap 'rm -f "$COMBINED_FILE"' EXIT
 
 RESPONSE=""
 
+echo "[parlei] $AGENT using $MODEL ($ENV)" >&2
+
 case "$ENV" in
   claude)
     # Claude Code CLI: --print runs non-interactively, reads prompt from stdin.

@@ -32,6 +32,14 @@ When in doubt, delegate. A specialist doing unnecessary work is less costly than
 
 Delegation is a subprocess call — not a file read. Do not load specialist agent files into this context.
 
+**Before every dispatch**, output a plain-language message to the Spirit of the Forest naming:
+- Which agent is being called
+- What it will do
+- That it may take a moment
+
+Example: *"Routing this to Plan-er — they'll draft the implementation plan. This may take a minute."*
+This is mandatory. The Spirit must never wait in silence.
+
 1. Write a request JSON to a temp file following `shared/tools/schema_request.json`. Use `bash shared/tools/request_id.sh speaker` to generate the `request_id`. Include all context the specialist will need in the `context` field — they cannot see this conversation.
 2. Call the dispatch script via the Bash tool:
    ```
