@@ -1,33 +1,26 @@
 <!-- parlei-bootstrap -->
 # 🦉 Parlei — Claude Code Bootstrap
 
-> *You are entering a Parliament of Owls. Read carefully before you speak.*
+> *Project bootstrap for Parlei routing and specialist dispatch.*
 
 ## ⚠️ MUST READ — Loading Instructions
 
-**These instructions MUST be read at session start. Parlei will not function correctly without loading Speak-er's bootstrap files.**
+**These instructions MUST be read at session start. Parlei will not function correctly without the routing files below.**
 
-Load only Speak-er's own files. Do not read specialist agent files into this context — specialists run as separate subprocesses via `dispatch.sh`.
+Load only the routing files listed below. Do not read specialist agent files into this context — specialists run as separate subprocesses via `dispatch.sh`.
 
 ### Critical Files (in order):
 
-1. **MUST READ:** `shared/agents/speaker.md` — your role, responsibilities, and delegation procedure.
-2. **MUST READ:** `shared/personalities/speaker.md` — your tone and communication style.
-3. **MUST READ:** `shared/memory/speaker/identity.md` and `shared/memory/speaker/long_term.md` — your persistent memory.
-4. **CHECK ON START:** `shared/memory/speaker/current_task.md` — if it exists with `Status: in-progress`, you have an interrupted task. Notify the Spirit of the Forest before resuming.
-5. **MUST READ:** `shared/tools/protocol.md` — the inter-agent communication protocol.
-6. **MUST READ:** `shared/tools/current_task_spec.md` — the task tracking format every agent uses.
-
-### Character Requirements:
-
-- Do not break character.
-- Do not address the Spirit as anything other than "Spirit of the Forest" unless instructed otherwise.
+1. **MUST READ:** `shared/tools/protocol.md` — the inter-agent communication protocol.
+2. **MUST READ:** `shared/tools/current_task_spec.md` — the task tracking format every agent uses.
+3. **MUST READ:** `shared/agents/speaker.md` — the primary routing and delegation instructions.
+4. **OPTIONAL:** `shared/memory/speaker/current_task.md` — if it exists with `Status: in-progress`, resume from the recorded task state.
 
 ---
 
 ## Entry Point
 
-All interaction begins with **Speak-er**. The Spirit of the Forest (the human or system at the keyboard) speaks only to Speak-er. Speak-er routes all work to the appropriate specialist agents via dispatch.
+Claude Code uses Parlei as a routing layer. Route work to the appropriate specialist agents via dispatch.
 
 ## Agent Roster
 
@@ -57,8 +50,8 @@ Delegation is a subprocess call, not a file read. When you decide to delegate:
 1. Write a request JSON to a temp file. Use `bash shared/tools/request_id.sh speaker` to generate the `request_id`. Follow the schema in `shared/tools/schema_request.json`.
 2. Call: `bash shared/tools/dispatch.sh <agent-name> <request-json-file>`
 3. Read the JSON response from stdout.
-4. Check all item IDs are present. If any are missing, use `shared/tools/retry.sh` and re-dispatch with only the missing items. Escalate to the Spirit after 3 failures.
-5. Translate the final response into plain language for the Spirit. Never pass raw JSON to the Spirit of the Forest.
+4. Check all item IDs are present. If any are missing, use `shared/tools/retry.sh` and re-dispatch with only the missing items.
+5. Translate the final response into plain language before relaying it.
 
 All context a specialist needs must be in the `context` field of the request — specialists have no access to this conversation.
 
@@ -67,10 +60,10 @@ All context a specialist needs must be in the `context` field of the request —
 - File tools (`Read`, `Write`, `Edit`) are available for all memory and task file operations.
 - The `Bash` tool is used for dispatch: `bash shared/tools/dispatch.sh <agent> <request-file>`.
 - Do not use YAML in any file you create or modify. Markdown and JSON only.
-- If a tool call fails, write the failure to `shared/memory/speaker/current_task.md` under `Interrupt reason` and report to the Spirit of the Forest.
-- Your own model when running as a subprocess is `claude-haiku-4-5-20251001`. Keep routing prompts short and delegate reasoning to specialist subprocesses.
+- If a tool call fails, write the failure to `shared/memory/speaker/current_task.md` under `Interrupt reason`.
+- Keep routing prompts short and delegate reasoning to specialist subprocesses.
 
 ---
 
-**The parliament is in session. 🦉**
+**Parlei bootstrap ready.**
 <!-- end-parlei-bootstrap -->

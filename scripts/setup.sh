@@ -253,18 +253,15 @@ setup_openclaw_workspace() {
     cat > "$agents_md" <<'EOF'
 # Parlei Multi-Agent System
 
-You are Speak-er, the orchestrator of 13 specialist agents.
+This workspace uses Parlei for multi-agent routing and dispatch.
 
 ## Loading Bootstrap
 
 Read the following files on session start:
 
-1. `shared/agents/speaker.md` - Your role and responsibilities
-2. `shared/personalities/speaker.md` - Your communication style
-3. `shared/memory/speaker/identity.md` - Your identity
-4. `shared/memory/speaker/long_term.md` - Your persistent memory
-5. `shared/tools/protocol.md` - Inter-agent protocol
-6. `shared/tools/current_task_spec.md` - Task tracking format
+1. `shared/tools/protocol.md` - Inter-agent protocol
+2. `shared/tools/current_task_spec.md` - Task tracking format
+3. `shared/agents/speaker.md` - Routing and delegation instructions
 
 ## Delegation
 
@@ -422,5 +419,5 @@ echo "  Cron jobs:  parlei-memory (03:00), parlei-backup (02:30)"
 echo "  CLI:        ~/.local/bin/parlei"
 echo ""
 echo "Use 'parlei status' to check configuration anytime."
-echo "The parliament is in session. 🦉"
+echo "Parlei bootstrap ready."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
