@@ -66,6 +66,7 @@ build_agent_table() {
 
 # Generate the full CLAUDE.md file
 cat > "$OUTPUT_FILE" << 'BOOTSTRAP_EOF'
+<!-- parlei-bootstrap -->
 # 🦉 Parlei — Claude Code Bootstrap
 
 > *You are entering a Parliament of Owls. Read carefully before you speak.*
@@ -133,6 +134,7 @@ All context a specialist needs must be in the `context` field of the request —
 ---
 
 **The parliament is in session. 🦉**
+<!-- end-parlei-bootstrap -->
 BOOTSTRAP_EOF
 
 echo "✓ Generated: $OUTPUT_FILE"
