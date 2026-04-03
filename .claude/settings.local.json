@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x scripts/setup.sh)",
+      "Bash(bash -n scripts/setup.sh)",
+      "Bash(for agent:*)",
+      "Bash(do mkdir:*)",
+      "Bash(chmod +x scripts/memory_optimize.sh)",
+      "Bash(bash -n scripts/memory_optimize.sh)",
+      "Bash(chmod +x shared/tools/llm_call.sh)",
+      "Bash(bash -n shared/tools/llm_call.sh)",
+      "Bash(chmod +x shared/tools/request_id.sh shared/tools/retry.sh)",
+      "Bash(bash -n shared/tools/request_id.sh)",
+      "Bash(bash -n shared/tools/retry.sh)",
+      "Bash(chmod +x scripts/backup.sh scripts/restore.sh)",
+      "Bash(bash -n scripts/backup.sh)",
+      "Bash(bash -n scripts/restore.sh)",
+      "Bash(pip3 show:*)",
+      "Bash(chmod +x scripts/run_tests.sh)",
+      "Bash(bash -n scripts/run_tests.sh)",
+      "Bash(chmod +x shared/tools/current_task.sh)",
+      "Bash(bash -n shared/tools/current_task.sh)",
+      "Bash(grep -rn \"\\\\`PLAN\\\\.md\\\\`\\\\|\\\\`TASKS\\\\.md\\\\`\\\\|\\\\`ARCHITECTURE\\\\.md\\\\`\\\\|\\\\`REORIGINATION\\\\.md\\\\`\\\\|\\\\`DESIGN\\\\.md\\\\`\" shared/ --include=\"*.md\")",
+      "Bash(grep -rn \"\\\\`AUGGIE\\\\.md\\\\`\\\\|\\\\`CODEX\\\\.md\\\\`\\\\|\\\\`OPENCLAW\\\\.md\\\\`\" shared/ --include=\"*.md\")",
+      "Bash(wc -l docs/install-*.md)"
+    ]
+  }
+}
